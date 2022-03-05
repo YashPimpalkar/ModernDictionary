@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+<head>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cantora+One&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" type="image/ico" href="{% static 'images/logo.ico' %}"/>
+    <title>Modern Dictionary</title>
+</head>
+{% block word %}{% endblock word %}
+{% block search %}
+    <div class="content-1" id="content-1" style="border: 5px solid black;border-radius: 10px;padding-inline: 20px;">
+        {% if title == '' %}
+            <h3 style="text-align: center;"><b>Please Type Something Valid!!</b></h3>
+        {% elif synonyms == '' %}
+            {% if antonyms == '' %}
+                <h2 style="display: inline;">{{ title }}</h2>
+                <a href="{% url 'speak' %}"><i class="material-icons prefix" style="display: inline;">volume_up</i></a>
+                <h5><b>Meaning: </b>{{ final_meaning }}</h5>
+                <h5><b>Example: </b>{{ final_example }}</h5>
+                <h5><b>Synonyms:</b> There are no synonyms for this word.</h5>
+                <h5><b>Antonyms: </b>There are no antonyms for this word.</h5>
+            {% endif %}
+        {% elif antonyms == '' %}
+            <h2 style="display: inline;">{{ title }}</h2>
+            <a href="{% url 'speak' %}"><i class="material-icons prefix" style="display: inline;">volume_up</i></a>
+            <h5><b>Meaning:</b> {{ final_meaning }}</h5>
+            <h5><b>Example: </b>{{ final_example }}</h5>
+            <h5><b>Synonyms:</b> {{ synonyms }}</h5>
+        {% elif synonyms == '' %}
+            <h2 style="display: inline;">{{ title }}</h2>
+            <a href="{% url 'speak' %}"><i class="material-icons prefix" style="display: inline;">volume_up</i></a>
+            <h5><b>Meaning:</b> {{ final_meaning }}</h5>
+            <h5><b>Example:</b> {{ final_example }}</h5>
+            <h5><b>Antonyms: </b>{{ antonyms }}</h5>
+        {% else %}
+            <h2 style="display: inline;">{{ title }}</h2>
+            <a href="{% url 'speak' %}"><i class="material-icons prefix" style="display: inline;">volume_up</i></a>
+            <h5><b>Meaning: </b>{{ final_meaning }}</h5>
+            <h5><b>Example: </b>{{ final_example }}</h5>
+            <h5><b>Synonyms:</b> {{ synonyms }}</h5>
+            <h5><b>Antonyms: </b>{{ antonyms }}</h5>
+        {% endif %}
+    </div>
+{% endblock search %}
+
+

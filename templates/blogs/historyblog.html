@@ -1,0 +1,866 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Modern Dictionary</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bitter:wght@376&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="shortcut icon" type="image/ico" href="{% static 'images/logo.ico' %}"/>
+    <link rel="stylesheet" type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <title> Modern Dictionary</title>
+    <style>
+        body {
+            font-family: 'Bitter', serif;
+        }
+
+        #nav {
+            background-color: #066084;
+        }
+
+        a:hover {
+            color: black;
+        }
+
+        #games {
+            font-size: 21px;
+        }
+
+        #games:hover {
+            background-color: white;
+            color: #066084;
+            font-weight: bold;
+        }
+
+        p {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        ol {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        h1, h4 {
+            color: #0484c4;
+        }
+
+        .chat-bar-collapsible {
+            position: fixed;
+            bottom: 0;
+            right: 50px;
+
+            box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .collapsible {
+            background-color: #066084;
+            color: white;
+            cursor: pointer;
+            padding: 18px;
+            width: 250px;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            border-radius: 10px 10px 0px 0px;
+        {#border: 3px solid white;#}{#border-bottom: none;#}
+        }
+
+        .content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+            background-color: black;
+        }
+
+        .full-chat-block {
+            width: 350px;
+
+            background: white;
+            text-align: center;
+            overflow: auto;
+            scrollbar-width: none;
+            height: max-content;
+            transition: max-height 0.2s ease-out;
+        }
+
+        .outer-container {
+            min-height: 300px;
+            bottom: 0%;
+            width: 250px;
+            position: relative;
+            background-color: white;
+        }
+
+
+        .chat-container {
+            max-height: 300px;
+            width: 100%;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            scroll-behavior: smooth;
+            border-radius: 10px 10px 0px 0px;
+            hyphens: auto;
+        }
+
+        .chat-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .chat-bar-input-block {
+            display: flex;
+            float: left;
+            box-sizing: border-box;
+            justify-content: space-between;
+            width: 100%;
+            align-items: center;
+            background-color: rgb(235, 235, 235);
+            border-radius: 10px 10px 0px 0px;
+            padding: 10px 0px 10px 10px;
+        }
+
+        .chat-bar-icons {
+            display: flex;
+            justify-content: space-evenly;
+            box-sizing: border-box;
+            width: 25%;
+            float: right;
+            font-size: 20px;
+        }
+
+        #chat-icon:hover {
+            opacity: .7;
+        }
+
+        /* Chat bubbles */
+
+        #userInput {
+            width: 75%;
+        }
+
+        .input-box {
+            float: left;
+            border: none;
+            box-sizing: border-box;
+            width: 100%;
+            border-radius: 10px;
+            padding: 10px;
+            font-size: 16px;
+            color: #000;
+            background-color: white;
+            outline: none
+        }
+
+        .userText {
+            color: white;
+            font-family: Helvetica;
+            font-size: 16px;
+            font-weight: normal;
+            text-align: right;
+            clear: both;
+        }
+
+        .userText span {
+            line-height: 1.5em;
+            display: inline-block;
+            background: #066084;
+            padding: 10px;
+            border-radius: 8px;
+            border-bottom-right-radius: 2px;
+            max-width: 80%;
+            margin-right: 10px;
+            animation: floatup .5s forwards
+        }
+
+        .botText {
+            color: #000;
+            font-family: Helvetica;
+            font-weight: normal;
+            font-size: 16px;
+            text-align: left;
+            width: 280px;
+        }
+
+        .botText span {
+            line-height: 1.5em;
+            display: inline-block;
+            background: #e0e0e0;
+            padding: 10px;
+            border-radius: 8px;
+            border-bottom-left-radius: 2px;
+            max-width: 80%;
+            margin-left: 10px;
+            animation: floatup .5s forwards
+        }
+
+        @keyframes floatup {
+            from {
+                transform: translateY(14px);
+                opacity: .0;
+            }
+            to {
+                transform: translateY(0px);
+                opacity: 1;
+            }
+        }
+
+        @media screen and (max-width: 600px) {
+            .full-chat-block {
+                width: 100%;
+                border-radius: 0px;
+            }
+
+            .chat-bar-collapsible {
+                position: fixed;
+                bottom: 0px;
+                right: 0px;
+                width: 100%;
+            }
+
+            .collapsible {
+                width: 100%;
+                border: 0px;
+                border-top: 3px solid white;
+                border-radius: 0px;
+            }
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-family: Helvetica, sans-serif, Arial;
+        }
+
+        body {
+            margin: 0 auto;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            position: relative;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        footer {
+            background: rgb(0, 0, 0);
+            height: auto;
+            width: 100%;
+            padding-top: 40px;
+            color: #fff;
+        }
+
+        .footer-content h3 {
+            font-size: 1.9rem;
+            font-weight: 500;
+            text-transform: capitalize;
+            line-height: 8rem;
+            text-align: center;
+            position: relative;
+            top: -60px;
+            color: #ffffff;
+        }
+
+        .footer-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .footer-bottom {
+            background: rgb(12, 35, 61);
+            width: 100%;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        .footer-bottom p {
+            font-size: 20px;
+            word-spacing: 2px;
+            text-transform: capitalize;
+        }
+
+        .footer-bottom span {
+            text-transform: uppercase;
+            opacity: .4;
+            font-weight: 200;
+        }
+
+        .footer-col {
+            width: 25%;
+            padding: 0 15px;
+        }
+
+        .footer-col h4 {
+            font-size: 18px;
+            color: #ffffff;
+            text-transform: capitalize;
+            margin-bottom: 28px;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .footer-col h4::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -7px;
+            background-color: #e91e63;
+            height: 2px;
+            box-sizing: border-box;
+            width: 50px;
+        }
+
+        .footer-col ul li:not(:last-child) {
+            margin-bottom: 10px;
+        }
+
+        .footer-col ul li a {
+            font-size: 20px;
+            text-transform: capitalize;
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 300;
+            color: #bbbbbb;
+            display: block;
+            transition: all 0.3s ease;
+        }
+
+        .footer-col ul li a:hover {
+            color: #ffffff;
+            padding-left: 8px;
+        }
+
+        .footer-col .social-links a {
+            display: inline-block;
+            height: 40px;
+            width: 40px;
+            background-color: rgb(253, 10, 144);
+            margin: 0 8px 8px 0;
+            text-align: center;
+            line-height: 40px;
+            border-radius: 50%;
+            color: #ffffff;
+            transition: all 0.5s ease;
+        }
+
+        .footer-col .social-links a:hover {
+            color: #24262b;
+            background-color: #ffffff;
+        }
+
+        /*responsive*/
+        @media (max-width: 767px) {
+            .footer-col {
+                width: 50%;
+                margin-bottom: 30px;
+            }
+        }
+
+        @media (max-width: 574px) {
+            .footer-col {
+                width: 100%;
+            }
+        }
+        @media screen and (max-width: 1000px){
+            #logo,#menu{
+                font-size: 50px;
+            }
+            footer{
+                margin-top: 890px;
+            }
+            body{
+                height: 100px;
+            }
+
+            #games{
+                font-size: 40px;
+                padding: 40px;
+            }
+            p,li{
+                font-size: 40px;
+            }
+            body h4{
+                font-size: 45px;
+            }
+            .footer h4{
+                font-size: 30px;
+            }
+            .footer ul li a{
+                font-size: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+<nav id="nav">
+    <div class="nav-wrapper">
+        <div class="container">
+            <a href="/" class="brand-logo" id="logo">Modern Dictionary</a>
+            <a class="sidenav-trigger" data-target="mobile-nav">
+                <i class="material-icons" id="menu">menu</i>
+            </a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <li><a href="{% url 'blogs' %}" id="games">Back</a></li>
+                <li><a href="{% url 'download' %}" id="games">Download</a></li>
+                <li><a href="{% url 'games' %}" id="games">Games</a></li>
+                <li><a href="/" id="games">Home</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<ul class="sidenav" id="mobile-nav">
+    <li><a href="{% url 'blogs' %}" id="games">Back</a></li>
+    <li><a href="{% url 'download' %}" id="games">Download</a></li>
+    <li><a href="{% url 'games' %}" id="games">Games</a></li>
+    <li><a href="/" id="games">Home</a></li>
+</ul>
+<div id="google_translate_element"></div>
+<div class="container">
+    <h1 style="text-align: center;"><b>History of Dictionary and Its Types</b></h1>
+    <hr size="13" width="100%" color="#066084" align="center">
+    <p>
+        The word "Dictionary" was invented by an Englishman called John of Garland in 1220 — he had written a book
+        Dictionarius to help with Latin "diction". An early non-alphabetical list of 8000 English words was the
+        Elementarie, created by Richard Mulcaster in 1582.
+        The first purely English alphabetical dictionary was A Table Alphabeticall, written by English schoolteacher
+        Robert Cawdrey in 1604. The only surviving copy is found at the Bodleian Library in Oxford.
+        In 1616, John Bullokar described the history of the dictionary with his "English Expositor". Glossographia by
+        Thomas Blount, published in 1656, contains more than 10,000 words along with their etymologies or histories.
+        Edward Phillips wrote another dictionary in 1658, entitled "The New World of English Words: Or a General
+        Dictionary" which boldly plagiarized Blount's work, and the two criticised each other. This created more
+        interest in the dictionaries. John Wilkins' 1668 essay on philosophical language contains a list of 11,500 words
+        with careful distinctions, compiled by William Lloyd. Elisha Coles published his "English Dictionary" in
+        1676.
+    </p>
+
+    <p>
+        It was not until Samuel Johnson's A Dictionary of the English Language (1755) that a more reliable English
+        dictionary was produced. Many people today mistakenly believe that Johnson wrote the first English dictionary: a
+        testimony to this legacy. By this stage, dictionaries had evolved to contain textual references for most
+        words, and were arranged alphabetically, rather than by topic (a previously popular form of arrangement, which
+        meant all animals would be grouped together, etc.). Johnson's masterwork could be judged as the first to bring
+        all these elements together, creating the first "modern" dictionary.
+    </p>
+    <p>
+
+        As Jorge Luis Borges says in the prologue to "El otro, el mismo": "It is often forgotten that (dictionaries) are
+        artificial repositories, put together well after the languages they define. The roots of language are irrational
+        and of a magical nature."
+    </p>
+
+    <h4>
+        <b>
+            Types
+        </b>
+    </h4>
+    <hr>
+    <p>
+        In a general dictionary, each word may have multiple meanings. Some dictionaries include each separate meaning
+        in the order of most common usage while others list definitions in historical order, with the oldest usage
+        first.
+    </p>
+    <p>
+        In many languages, words can appear in many different forms, but only the undeclined or unconjugated form
+        appears as the headword in most dictionaries. Dictionaries are most commonly found in the form of a book, but
+        some newer dictionaries, like StarDict and the New Oxford American Dictionary are dictionary software running on
+        PDAs or computers. There are also many online dictionaries accessible via the Internet.
+        Specialized dictionaries
+
+    <h4><b>
+        Main article: Specialized Dictionary
+    </b>
+    </h4>
+    <hr>
+    <p>
+        According to the Manual of Specialized Lexicographies, a specialized dictionary, also referred to as a technical
+        dictionary, is a dictionary that focuses upon a specific subject field, as opposed to a dictionary that
+        comprehensively contains words from the lexicon of a specific language or languages. Following the description
+        in The Bilingual LSP Dictionary, lexicographers categorize specialized dictionaries into three types: A
+        multi-field dictionary broadly covers several subject fields (e.g. a business dictionary), a single-field
+        dictionary narrowly covers one particular subject field (e.g. law), and a sub-field dictionary covers a more
+        specialized field (e.g. constitutional law). For example, the 23-language Inter-Active Terminology for Europe is
+        a multi-field dictionary, the American National Biography is a single-field, and the African American National
+        Biography Project is a sub-field dictionary. In terms of the coverage distinction between "minimizing
+        dictionaries" and "maximizing dictionaries", multi-field dictionaries tend to minimize coverage across subject
+        fields (for instance, Oxford Dictionary of World Religions and Yadgar Dictionary of Computer and Internet
+        Terms) whereas single-field and sub-field dictionaries tend to maximize coverage within a limited subject
+        field (The Oxford Dictionary of English Etymology).
+        Another variant is the glossary, an alphabetical list of defined terms in a specialized field, such as medicine
+        (medical dictionary).
+    </p>
+    <h4><b>
+        Defining Dictionaries
+    </b>
+    </h4>
+    <hr>
+    <p>
+        The simplest dictionary, a defining dictionary, provides a core glossary of the simplest meanings of the
+        simplest concepts. From these, other concepts can be explained and defined, in particular for those who are
+        first learning a language. In English, the commercial defining dictionaries typically include only one or two
+        meanings of under 2000 words. With these, the rest of English, and even the 4000 most common English idioms and
+        metaphors, can be defined.
+    </p>
+    <h4><b>
+        Prescriptive vs. Descriptive
+    </b>
+    </h4>
+    <hr>
+    <p>
+        Lexicographers apply two basic philosophies to the defining of words: prescriptive or descriptive. Noah Webster,
+        intent on forging a distinct identity for the American language, altered spellings and accentuated differences
+        in meaning and pronunciation of some words. This is why American English now uses the spelling color while the
+        rest of the English-speaking world prefers colour. (Similarly, British English subsequently underwent a few
+        spelling changes that did not affect American English; see further at American and British English spelling
+        differences.)
+    </p>
+    <p>
+        Large 20th-century dictionaries such as the Oxford English Dictionary (OED) and Webster's Third are descriptive,
+        and attempt to describe the actual use of words. Most dictionaries of English now apply the descriptive method
+        to a word's definition, and then, outside of the definition itself, provide information alerting readers to
+        attitudes which may influence their choices on words often considered vulgar, offensive, erroneous, or easily
+        confused.Merriam-Webster is subtle, only adding italicized notations such as, sometimes offensive or stand
+        (nonstandard). American Heritage goes further, discussing issues separately in numerous "usage notes." Encarta
+        provides similar notes, but is more prescriptive, offering warnings and admonitions against the use of certain
+        words considered by many to be offensive or illiterate, such as, "an offensive term for..." or "a taboo term
+        meaning...".
+    </p>
+    <p>
+        Because of the widespread use of dictionaries in schools, and their acceptance by many as language authorities,
+        their treatment of the language does affect usage to some degree, with even the most descriptive dictionaries
+        providing conservative continuity. In the long run, however, the meanings of words in English are primarily
+        determined by usage, and the language is being changed and created every day. As Jorge Luis Borges says in
+        the prologue to "El otro, el mismo": "It is often forgotten that (dictionaries) are artificial repositories, put
+        together well after the languages they define. The roots of language are irrational and of a magical nature."
+        Sometimes the same dictionary can be descriptive in some domains and prescriptive in others. For example,
+        according to Ghil'ad Zuckermann, the Oxford English-Hebrew Dictionary is "at war with itself": whereas its
+        coverage (lexical items) and glosses (definitions) are descriptive and colloquial, its vocalization is
+        prescriptive. This internal conflict results in absurd sentences such as hi taharóg otí kshetiré me asíti
+        lamkhonít (she'll tear me apart when she sees what I've done to the car). Whereas hi taharóg otí, literally 'she
+        will kill me', is colloquial, me (a variant of ma 'what') is archaic, resulting in a combination that is
+        unutterable in real life.
+    </p>
+    <h4><b>
+        Historical Dictionaries
+    </b>
+    </h4>
+    <hr>
+    <p>
+        A historical dictionary is a specific kind of descriptive dictionary which describes the development of words
+        and senses over time, usually using citations to original source material to support its conclusions.
+        Dictionaries for natural language processing
+        In contrast to traditional dictionaries, which are designed to be used by human beings, dictionaries for natural
+        language processing (NLP) are built to be used by computer programs. The final user is a human being but the
+        direct user is a program. Such a dictionary does not need to be able to be printed on paper. The structure of
+        the content is not linear, ordered entry by entry but has the form of a complex network (see Diathesis
+        alternation). Because most of these dictionaries are used to control machine translations or cross-lingual
+        information retrieval (CLIR) the content is usually multilingual and usually of huge size. In order to allow
+        formalized exchange and merging of dictionaries, an ISO standard called Lexical Markup Framework (LMF) has been
+        defined and used among the industrial and academic community.
+        Further information: Machine-readable dictionary
+    </p>
+    <h4><b>
+        Other Types
+    </b>
+    </h4>
+    <hr>
+    <ol>
+        <li>Bilingual dictionary</li>
+        <li>Collegiate dictionary (American)</li>
+        <li>Learner's dictionary (mostly British)</li>
+        <li>Electronic dictionary</li>
+        <li>Encyclopedic dictionary</li>
+        <li>Monolingual learner's dictionary</li>
+        <li>Advanced learner's dictionary</li>
+        <li>By sound</li>
+        <li>Rhyming dictionary</li>
+        <li>Reverse dictionary (Conceptual dictionary)</li>
+        <li>Visual dictionary</li>
+        <li>Satirical dictionary</li>
+        <li>Phonetic dictionary</li>
+    </ol>
+</div>
+<!-- Compiled and minified CSS -->
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+<!-- Compiled and minified JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script type="text/javascript">
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+            pageLanguage: 'en', // set default for your need
+            includedLanguages: 'bg,bs,de,en,es,fr,hr,hu,it,ja,ko,mk,nl,ro,ru,sl,sq,sr,zh-CN,mr', // include other languages per need
+            layout: google.translate.TranslateElement.InlineLayout.SIMPLE, // style or type of the box
+            gaTrack: true, // otherwise false if not using GA
+            gaId: 'UA-XXXXXXX-X' // your Google Analytics tracking ID, not needed if not using GA
+        }, 'google_translate_element');
+    }
+</script>
+<script type="text/javascript"
+        src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<footer class="footer">
+    <div class="container" id="">
+        <div class="row">
+            <div class="footer-col">
+                <h4>company</h4>
+                <ul>
+                    <li><a href="{% url 'aboutus' %}">about us</a></li>
+                    <li><a href="{% url 'privacy' %}">privacy policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>get help</h4>
+                <ul>
+                    <li>
+                        <a href="https://docs.google.com/forms/d/e/1FAIpQLSfGF14XUm0-lV9cmSUeQFvJHgeCUu462_4_Siz8KGUpjuOdkw/viewform"
+                           target="_blank">Customer care</a></li>
+                    <li>
+                        <a href="https://docs.google.com/forms/d/e/1FAIpQLSfGF14XUm0-lV9cmSUeQFvJHgeCUu462_4_Siz8KGUpjuOdkw/viewform"
+                           target="_blank">Report</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+
+            </div>
+            <div class="footer-col">
+                <h4>follow us</h4>
+                <div class="social-links" style="display: flex;justify-content: space-evenly;">
+                    <a href="https://www.facebook.com/profile.php?id=100074285931176" target="_blank"><i
+                            class="fab fa-facebook-f"></i></a>
+                    <a href="https://twitter.com/ModernDictiona1" target="_blank"><i class="fab fa-twitter"></i></a>
+                    <a href="https://www.instagram.com/moderndictionary5/" target="_blank"><i
+                            class="fab fa-instagram"></i></a>
+                    <a href="https://www.linkedin.com/in/modern-dictionary-b713b1225/" target="_blank"><i
+                            class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <h6>Copyright &copy; 2021 moderndictionary.com</h6>
+    </div>
+</footer>
+<!-- CHAT BAR BLOCK -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<div class="chat-bar-collapsible" style="width: 250px;border-radius: 80px 80px 0px 0px;margin-top: 50px;">
+    <button id="chat-button" type="button" class="collapsible" style="background-color: #066084;">Chat with Us!
+        {#        <i id="chat-icon" style="color: #fff;" class="fa fa-fw fa-comments-o"></i>#}
+    </button>
+
+    <div class="content">
+        <div class="full-chat-block">
+            <!-- Message Container -->
+            <div class="outer-container">
+                <div class="chat-container">
+                    <!-- Messages -->
+                    <div id="chatbox">
+                        <h5 id="chat-timestamp"></h5>
+                        <p id="botStarterMessage" class="botText"><span>Loading...</span></p>
+                    </div>
+
+                    <!-- User input box -->
+                    <div class="chat-bar-input-block">
+                        <div id="userInput">
+                            <input id="textInput" class="input-box" type="text" name="msg"
+                                   placeholder="Tap 'Enter' to send a message">
+                            <p></p>
+                        </div>
+
+                        <div class="chat-bar-icons">
+                            <i id="chat-icon" style="color: crimson;" class="fa fa-fw fa-heart"
+                               onclick="heartButton()"></i>
+                            <i id="chat-icon" style="color: #333;" class="fa fa-fw fa-send"
+                               onclick="sendButton()"></i>
+                        </div>
+                    </div>
+
+                    <div id="chat-bar-bottom">
+                        <p></p>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+<script>
+    // Collapsible
+    var coll = document.getElementsByClassName("collapsible");
+
+    for (let i = 0; i < coll.length; i++) {
+        coll[i].addEventListener("click", function () {
+            this.classList.toggle("active");
+
+            var content = this.nextElementSibling;
+
+            if (content.style.maxHeight) {
+                content.style.maxHeight = null;
+            } else {
+                content.style.maxHeight = content.scrollHeight + "px";
+            }
+
+        });
+    }
+
+    function getTime() {
+        let today = new Date();
+        hours = today.getHours();
+        minutes = today.getMinutes();
+
+        if (hours < 10) {
+            hours = "0" + hours;
+        }
+
+        if (minutes < 10) {
+            minutes = "0" + minutes;
+        }
+
+        let time = hours + ":" + minutes;
+        return time;
+    }
+
+    // Gets the first message
+    function firstBotMessage() {
+        let firstMessage = "How's it going?"
+        document.getElementById("botStarterMessage").innerHTML = '<p class="botText"><span>' + firstMessage + '</span></p>';
+
+        let time = getTime();
+
+        $("#chat-timestamp").append(time);
+        document.getElementById("userInput").scrollIntoView(false);
+    }
+
+    firstBotMessage();
+
+    // Retrieves the response
+    function getHardResponse(userText) {
+        let botResponse = getBotResponse(userText);
+        let botHtml = '<p class="botText"><span>' + botResponse + '</span></p>';
+        $("#chatbox").append(botHtml);
+
+        document.getElementById("chat-bar-bottom").scrollIntoView(true);
+    }
+
+    //Gets the text text from the input box and processes it
+    function getResponse() {
+        let userText = $("#textInput").val();
+
+        if (userText == "") {
+            userText = "I love Code Palace!";
+        }
+
+        let userHtml = '<p class="userText"><span>' + userText + '</span></p>';
+
+        $("#textInput").val("");
+        $("#chatbox").append(userHtml);
+        document.getElementById("chat-bar-bottom").scrollIntoView(true);
+
+        setTimeout(() => {
+            getHardResponse(userText);
+        }, 1000)
+
+    }
+
+    // Handles sending text via button clicks
+    function buttonSendText(sampleText) {
+        let userHtml = '<p class="userText"><span>' + sampleText + '</span></p>';
+
+        $("#textInput").val("");
+        $("#chatbox").append(userHtml);
+        document.getElementById("chat-bar-bottom").scrollIntoView(true);
+
+        //Uncomment this if you want the bot to respond to this buttonSendText event
+        // setTimeout(() => {
+        //     getHardResponse(sampleText);
+        // }, 1000)
+    }
+
+    function sendButton() {
+        getResponse();
+    }
+
+    function heartButton() {
+        buttonSendText("Heart clicked!")
+    }
+
+    // Press enter to send a message
+    $("#textInput").keypress(function (e) {
+        if (e.which == 13) {
+            getResponse();
+        }
+    });
+
+    function getBotResponse(input) {
+        var input = input.toLowerCase();
+        //rock paper scissors
+        if (input == "rock") {
+            return "paper";
+        } else if (input == "paper") {
+            return "scissors";
+        } else if (input == "scissors") {
+            return "rock";
+        }
+
+        // Simple responses
+        if (input == "hello" || input == "hi") {
+            return "Hello there!";
+        } else if (input == "goodbye" || input == "bye") {
+            return "Talk to you later!";
+        } else if (input == "help" || input == "contact me") {
+            window.open("https://forms.gle/EUFqN7ytCjpfXNPY8", '_blank').focus();
+            return "Check Your Browser Tabs";
+        } else if (input == "games" || input == "bored") {
+            window.open("{% url 'games' %}", "_self");
+            return "Enjoy your Play!"
+        } else if (input == "blogs" || input == "read") {
+            window.open("{% url 'blogs' %}", "_self");
+            return "Read your favourite blogs!";
+        } else if (input == "phone number" || input == "emailid" || input == "contact you") {
+
+            return "Email id :- aaryanrlondhe99@gmail.com Phone Number: +91 7045854423";
+
+        } else if (input == "download" || input == "ebooks" || input == "dictionary") {
+            window.open("{% url 'download' %}", "_self");
+            return "Check Your Browser Tabs";
+        } else if (input == "about us" || input == "aboutus" || input == "about") {
+            window.open("{% url 'aboutus' %}", "_self");
+            return "Check Your Browser Tabs";
+        } else if (input == "privacy" || input == "cookies" || input == "data") {
+            window.open("{% url 'privacy' %}", "_self");
+            return "Check Your Browser Tabs";
+        } else if (input == "download" || input == "ebooks" || input == "dictionary") {
+            window.open("{% url 'download' %}", "_self");
+            return "Check Your Browser Tabs";
+        } else {
+            return "Try asking something else!";
+        }
+    }
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.sidenav').sidenav();
+    });
+</script>
+</body>
+</html>

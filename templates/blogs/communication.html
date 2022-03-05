@@ -1,0 +1,877 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bitter:wght@376&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" type="image/ico" href="{% static 'images/logo.ico' %}"/>
+    <link rel="stylesheet" type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <title>Modern Dictionary</title>
+
+    <style>
+        body {
+            font-family: 'Bitter', serif;
+        }
+
+        #nav {
+            background-color: #066084;
+        }
+
+        a:hover {
+            color: black;
+        }
+
+        #games {
+            font-size: 21px;
+        }
+
+        #games:hover {
+            background-color: white;
+            color: #066084;
+            font-weight: bold;
+        }
+
+        p {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        ol {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        h1, h4 {
+            color: #0484c4;
+        }
+
+        .chat-bar-collapsible {
+            position: fixed;
+            bottom: 0;
+            right: 50px;
+
+            box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .collapsible {
+            background-color: #066084;
+            color: white;
+            cursor: pointer;
+            padding: 18px;
+            width: 250px;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            border-radius: 10px 10px 0px 0px;
+        {#border: 3px solid white;#}{#border-bottom: none;#}
+        }
+
+        .content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+            background-color: black;
+        }
+
+        .full-chat-block {
+            width: 350px;
+
+            background: white;
+            text-align: center;
+            overflow: auto;
+            scrollbar-width: none;
+            height: max-content;
+            transition: max-height 0.2s ease-out;
+        }
+
+        .outer-container {
+            min-height: 300px;
+            bottom: 0%;
+            width: 250px;
+            position: relative;
+            background-color: white;
+        }
+
+
+        .chat-container {
+            max-height: 300px;
+            width: 100%;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            scroll-behavior: smooth;
+            border-radius: 10px 10px 0px 0px;
+            hyphens: auto;
+        }
+
+        .chat-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .chat-bar-input-block {
+            display: flex;
+            float: left;
+            box-sizing: border-box;
+            justify-content: space-between;
+            width: 100%;
+            align-items: center;
+            background-color: rgb(235, 235, 235);
+            border-radius: 10px 10px 0px 0px;
+            padding: 10px 0px 10px 10px;
+        }
+
+        .chat-bar-icons {
+            display: flex;
+            justify-content: space-evenly;
+            box-sizing: border-box;
+            width: 25%;
+            float: right;
+            font-size: 20px;
+        }
+
+        #chat-icon:hover {
+            opacity: .7;
+        }
+
+        /* Chat bubbles */
+
+        #userInput {
+            width: 75%;
+        }
+
+        .input-box {
+            float: left;
+            border: none;
+            box-sizing: border-box;
+            width: 100%;
+            border-radius: 10px;
+            padding: 10px;
+            font-size: 16px;
+            color: #000;
+            background-color: white;
+            outline: none
+        }
+
+        .userText {
+            color: white;
+            font-family: Helvetica;
+            font-size: 16px;
+            font-weight: normal;
+            text-align: right;
+            clear: both;
+        }
+
+        .userText span {
+            line-height: 1.5em;
+            display: inline-block;
+            background: #066084;
+            padding: 10px;
+            border-radius: 8px;
+            border-bottom-right-radius: 2px;
+            max-width: 80%;
+            margin-right: 10px;
+            animation: floatup .5s forwards
+        }
+
+        .botText {
+            color: #000;
+            font-family: Helvetica;
+            font-weight: normal;
+            font-size: 16px;
+            text-align: left;
+            width: 280px;
+        }
+
+        .botText span {
+            line-height: 1.5em;
+            display: inline-block;
+            background: #e0e0e0;
+            padding: 10px;
+            border-radius: 8px;
+            border-bottom-left-radius: 2px;
+            max-width: 80%;
+            margin-left: 10px;
+            animation: floatup .5s forwards
+        }
+
+        @keyframes floatup {
+            from {
+                transform: translateY(14px);
+                opacity: .0;
+            }
+            to {
+                transform: translateY(0px);
+                opacity: 1;
+            }
+        }
+
+        @media screen and (max-width: 600px) {
+            .full-chat-block {
+                width: 100%;
+                border-radius: 0px;
+            }
+
+            .chat-bar-collapsible {
+                position: fixed;
+                bottom: 0px;
+                right: 0px;
+                width: 100%;
+            }
+
+            .collapsible {
+                width: 100%;
+                border: 0px;
+                border-top: 3px solid white;
+                border-radius: 0px;
+            }
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-family: Helvetica, sans-serif, Arial;
+        }
+
+        body {
+            margin: 0 auto;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            position: relative;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        footer {
+            background: rgb(0, 0, 0);
+            height: auto;
+            width: 100%;
+            padding-top: 40px;
+            color: #fff;
+        }
+
+        .footer-content h3 {
+            font-size: 1.9rem;
+            font-weight: 500;
+            text-transform: capitalize;
+            line-height: 8rem;
+            text-align: center;
+            position: relative;
+            top: -60px;
+            color: #ffffff;
+        }
+
+        .footer-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .footer-bottom {
+            background: rgb(12, 35, 61);
+            width: 100%;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        .footer-bottom p {
+            font-size: 20px;
+            word-spacing: 2px;
+            text-transform: capitalize;
+        }
+
+        .footer-bottom span {
+            text-transform: uppercase;
+            opacity: .4;
+            font-weight: 200;
+        }
+
+        .footer-col {
+            width: 25%;
+            padding: 0 15px;
+        }
+
+        .footer-col h4 {
+            font-size: 18px;
+            color: #ffffff;
+            text-transform: capitalize;
+            margin-bottom: 28px;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .footer-col h4::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -7px;
+            background-color: #e91e63;
+            height: 2px;
+            box-sizing: border-box;
+            width: 50px;
+        }
+
+        .footer-col ul li:not(:last-child) {
+            margin-bottom: 10px;
+        }
+
+        .footer-col ul li a {
+            font-size: 20px;
+            text-transform: capitalize;
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 300;
+            color: #bbbbbb;
+            display: block;
+            transition: all 0.3s ease;
+        }
+
+        .footer-col ul li a:hover {
+            color: #ffffff;
+            padding-left: 8px;
+        }
+
+        .footer-col .social-links a {
+            display: inline-block;
+            height: 40px;
+            width: 40px;
+            background-color: rgb(253, 10, 144);
+            margin: 0 8px 8px 0;
+            text-align: center;
+            line-height: 40px;
+            border-radius: 50%;
+            color: #ffffff;
+            transition: all 0.5s ease;
+        }
+
+        .footer-col .social-links a:hover {
+            color: #24262b;
+            background-color: #ffffff;
+        }
+
+        /*responsive*/
+        @media (max-width: 767px) {
+            .footer-col {
+                width: 50%;
+                margin-bottom: 30px;
+            }
+        }
+
+        @media (max-width: 574px) {
+            .footer-col {
+                width: 100%;
+            }
+        }
+
+        @media screen and (max-width: 1000px) {
+            #logo, #menu {
+                font-size: 50px;
+            }
+
+            footer {
+                margin-top: 890px;
+            }
+
+            body {
+                height: 100px;
+            }
+
+            p, li {
+                font-size: 40px;
+            }
+            body h4{
+                font-size: 45px;
+            }
+            #games {
+                font-size: 40px;
+                padding: 40px;
+            }
+
+            .footer h4 {
+                font-size: 30px;
+            }
+
+            .footer ul li a {
+                font-size: 25px;
+            }
+
+        }
+    </style>
+</head>
+<body>
+<nav id="nav">
+    <div class="nav-wrapper">
+        <div class="container">
+            <a href="/" class="brand-logo" id="logo">Modern Dictionary</a>
+            <a href="/" class="sidenav-trigger" data-target="mobile-nav">
+                <i class="material-icons" id="menu">menu</i>
+            </a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <li><a href="{% url 'blogs' %}" id="games">Back</a></li>
+                <li><a href="{% url 'download' %}" id="games">Download</a></li>
+                <li><a href="{% url 'games' %}" id="games">Games</a></li>
+                <li><a href="/" id="games">Home</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<ul class="sidenav" id="mobile-nav">
+    <li><a href="{% url 'blogs' %}" id="games">Back</a></li>
+    <li><a href="{% url 'download' %}" id="games">Download</a></li>
+    <li><a href="{% url 'games' %}" id="games">Games</a></li>
+    <li><a href="/" id="games">Home</a></li>
+</ul>
+<div id="google_translate_element"></div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<div class="container">
+    <h1 style="text-align: center;"><b>What are communication skills and tips to improve communication skills?</b></h1>
+    <hr size="13" width="100%" color="#066084" align="center">
+    <p>
+        Communication skill is the ability to convey or share ideas and feelings effectively.
+        Communication skills allow you to understand and be understood by others.
+        These can include but are not limited to communicating ideas to others clearly, a friendly and confident
+        demeanour,
+        respecting other points of view and speaking in a public setting. Developing your communication skills can do
+        much to help you advance in the workplace.
+        In this article, we explain what communication skills are and how you can improve your own.
+    </p>
+
+    <p>
+        You use communication skills when giving and receiving different kinds of information.
+        This can be written, spoken, typed or even body language. You might need to communicate ideas, feelings or
+        what's going on around you.
+        Communication skills involve listening, speaking, observing and empathising.
+        The skills are important whether you are speaking face-to-face, on a video call or through letters and emails.
+    </p>
+    <h4>
+        <b>
+            There are many different types of communication skills that you can make use of professionally.
+        </b>
+    </h4>
+    <hr>
+    <p>
+    <ol>
+        <li> Active listening</li>
+        <li>Adapting your communication style to your audience</li>
+        <li> Friendliness</li>
+        <li> Confidence</li>
+        <li>Offering and taking feedback</li>
+        <li>Respect</li>
+        <li>Understanding body language</li>
+        <li>Responsiveness</li>
+    </ol>
+    <h4><b> Active listening </b></h4>
+    <hr>
+    <p>
+        An active listener pays close attention to whoever is speaking.
+        People who are good active listeners often quickly earn the respect of co-workers as they appreciate the
+        attention given when speaking.
+        This can mean the active listener gets more attention back in return.
+        While it seems simple, this is a skill that can be hard to develop and improve.
+        You can be an active listener by focusing on the speaker and avoiding distractions.
+        It is a good idea to offer questions, comments or ideas relevant to the conversation topic afterwards.
+
+    </p>
+    <h4><b>
+        Adapting your communication style to your audience
+    </b>
+    </h4>
+    <hr>
+    <p>
+        Different styles of communication are required depending on the precise situation you are in.
+        It is important to be able to learn where and when to use these skills.
+        Be mindful of your audience and how best to communicate with them.
+        For example, if you are communicating with a potential employer, it may be best to email them,
+        rather than arrive at their place of work unannounced.
+        It may be that a letter sent in the post is the best way to communicate. In the workplace,
+        you may find it's easier to communicate complex information in person or via a video conference than in a long,
+        dense email.
+
+    </p>
+    <h4><b>Friendliness </b></h4>
+    <hr>
+    <p>
+        In a friendship, it is important to be honest and trustworthy.
+        It is the same for relationships in the workplace.
+        When you're working with others, keep a positive and open attitude.
+        Have an open mind and try to understand where colleagues are coming from, and why they have certain opinions.
+        Small gestures such as asking someone how they are, smiling as they speak or offering praise for work well done
+        can help you build positive relationships with both colleagues and managers.
+    </p>
+    <h4><b>Confidence </b></h4>
+    <hr>
+    <p>
+        People are attracted to confidence. In the workplace, people are more likely to respond to ideas that are
+        presented by a confident speaker.
+        There are many ways to appear confident. For example, consider making eye contact when you're speaking to
+        someone,
+        or sitting up straight with your shoulders open when listening.
+        Make sure you prepare ahead of time so your thoughts are polished and you can deal with any questions.
+        This will help you avoid being flustered
+    </p>
+    <h4><b> Offering and taking feedback </b></h4>
+    <hr>
+    <p>
+        Strong communicators can accept and request critical feedback without feeling attacked.
+        Feedback should always be about the task at hand, and should never be a comment on the person behind it.
+        It is also important to provide constructive input to others, by focusing on the problems and all potential
+        solutions.
+    </p>
+    <h4><b> Volume and clarity </b></h4>
+    <hr>
+    <p>
+        Make sure you are clear and audible whenever talking.
+        This doesn't necessarily mean shouting. By adjusting your speaking voice, you can be heard in a variety of
+        settings.
+        This is an important skill, and it's critical to effective communication. Speaking too loudly may be seen as
+        being disrespectful or arrogant in some situations.
+        Speak to quietly, and people will lose interest if they cannot hear what you have to say.
+        If you're unsure, read the room to see how others are communicating.
+
+    </p>
+    <h4><b> Empathy </b></h4>
+    <hr>
+    <p>
+        Having empathy means that you can understand and share the emotions of others.
+        For example, if someone is expressing anger or frustration, empathy can help you acknowledge and diffuse their
+        emotion.
+        At the same time, being able to understand when someone is feeling positive and enthusiastic can help you get
+        support for your ideas and projects.
+    </p>
+    <h4><b> Respect </b></h4>
+    <hr>
+    <p>
+        A key aspect of respect is knowing when to take part in a discussion.
+        In a team or group setting, allowing others to speak without interruption is seen as important and a mark of
+        respect to them.
+        Respectfully communicating also means using your time with someone else wisely—staying on topic, asking clear
+        questions and
+        responding fully to any questions you've been asked.
+    </p>
+    <h4><b> Understanding body language </b></h4>
+    <hr>
+    <p>
+        A lot of communication happens through body language. Nonverbal cues such as this include facial expressions,
+        eye contact and how someone is sitting. When you're listening to someone,
+        you should be paying attention to what they're saying as well as their nonverbal language.
+        Don't slouch, don't be fidgety and instead give them your full attention. By the same measure,
+        you should be conscious of your own body language when you're communicating to ensure you're sending appropriate
+        cues to others.
+    </p>
+    <h4><b> Responsiveness </b></h4>
+    <hr>
+    <p>
+        Whether you're returning a phone call or sending a reply to an email, fast communicators are viewed as more
+        effective than those who are slow to respond.
+        A good idea is to consider how long an email response might take. If you can do it in a few minutes,
+        why not do it straight away? If it might take a bit longer, put it to one side but let your colleague know you
+        will act upon it very soon.
+        If you give a timescale on when you will respond, this is viewed positively too.
+    </p>
+
+    <h4><b> How to improve your communication skills </b></h4>
+    <hr>
+    <p>
+        With experience and practise, you can learn and improve your communication skills.
+        Start by identifying your strengths and then practise and develop those areas:
+    </p>
+    <ol>
+        <li> Ask someone you trust to evaluate your communication skills. Understanding your areas of improvement for
+            communication can help you identify what to focus on.
+        </li>
+        <li> Practise improving communication habits. Many communication skills are habits you have developed over time,
+            so use them whenever you can.
+        </li>
+        <li> Consider signing up for workshops to improve communication skills. These can be online or in groups at
+            colleges and schools.
+        </li>
+        <li>Find opportunities both on and off the job where you can practise communication skills.</li>
+    </ol>
+
+
+</div>
+
+
+<!-- Compiled and minified CSS -->
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+<!-- Compiled and minified JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script type="text/javascript">
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+            pageLanguage: 'en', // set default for your need
+            includedLanguages: 'bg,bs,de,en,es,fr,hr,hu,it,ja,ko,mk,nl,ro,ru,sl,sq,sr,zh-CN,mr', // include other languages per need
+            layout: google.translate.TranslateElement.InlineLayout.SIMPLE, // style or type of the box
+            gaTrack: true, // otherwise false if not using GA
+            gaId: 'UA-XXXXXXX-X' // your Google Analytics tracking ID, not needed if not using GA
+        }, 'google_translate_element');
+    }
+</script>
+<script type="text/javascript"
+        src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<footer class="footer">
+    <div class="container" id="">
+        <div class="row">
+            <div class="footer-col">
+                <h4>company</h4>
+                <ul>
+                    <li><a href="{% url 'aboutus' %}">about us</a></li>
+                    <li><a href="{% url 'privacy' %}">privacy policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>get help</h4>
+                <ul>
+                    <li>
+                        <a href="https://docs.google.com/forms/d/e/1FAIpQLSfGF14XUm0-lV9cmSUeQFvJHgeCUu462_4_Siz8KGUpjuOdkw/viewform"
+                           target="_blank">Customer care</a></li>
+                    <li>
+                        <a href="https://docs.google.com/forms/d/e/1FAIpQLSfGF14XUm0-lV9cmSUeQFvJHgeCUu462_4_Siz8KGUpjuOdkw/viewform"
+                           target="_blank">Report</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+
+            </div>
+            <div class="footer-col">
+                <h4>follow us</h4>
+                <div class="social-links" style="display: flex;justify-content: space-evenly;">
+                    <a href="https://www.facebook.com/profile.php?id=100074285931176" target="_blank"><i
+                            class="fab fa-facebook-f"></i></a>
+                    <a href="https://twitter.com/ModernDictiona1" target="_blank"><i class="fab fa-twitter"></i></a>
+                    <a href="https://www.instagram.com/moderndictionary5/" target="_blank"><i
+                            class="fab fa-instagram"></i></a>
+                    <a href="https://www.linkedin.com/in/modern-dictionary-b713b1225/" target="_blank"><i
+                            class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <h6>Copyright &copy; 2021 moderndictionary.com</h6>
+    </div>
+</footer>
+<!-- CHAT BAR BLOCK -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<div class="chat-bar-collapsible" style="width: 250px;border-radius: 80px 80px 0px 0px;margin-top: 50px;">
+    <button id="chat-button" type="button" class="collapsible" style="background-color: #066084;">Chat with Us!
+        {#        <i id="chat-icon" style="color: #fff;" class="fa fa-fw fa-comments-o"></i>#}
+    </button>
+
+    <div class="content">
+        <div class="full-chat-block">
+            <!-- Message Container -->
+            <div class="outer-container">
+                <div class="chat-container">
+                    <!-- Messages -->
+                    <div id="chatbox">
+                        <h5 id="chat-timestamp"></h5>
+                        <p id="botStarterMessage" class="botText"><span>Loading...</span></p>
+                    </div>
+
+                    <!-- User input box -->
+                    <div class="chat-bar-input-block">
+                        <div id="userInput">
+                            <input id="textInput" class="input-box" type="text" name="msg"
+                                   placeholder="Tap 'Enter' to send a message">
+                            <p></p>
+                        </div>
+
+                        <div class="chat-bar-icons">
+                            <i id="chat-icon" style="color: crimson;" class="fa fa-fw fa-heart"
+                               onclick="heartButton()"></i>
+                            <i id="chat-icon" style="color: #333;" class="fa fa-fw fa-send"
+                               onclick="sendButton()"></i>
+                        </div>
+                    </div>
+
+                    <div id="chat-bar-bottom">
+                        <p></p>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+<script>
+    // Collapsible
+    var coll = document.getElementsByClassName("collapsible");
+
+    for (let i = 0; i < coll.length; i++) {
+        coll[i].addEventListener("click", function () {
+            this.classList.toggle("active");
+
+            var content = this.nextElementSibling;
+
+            if (content.style.maxHeight) {
+                content.style.maxHeight = null;
+            } else {
+                content.style.maxHeight = content.scrollHeight + "px";
+            }
+
+        });
+    }
+
+    function getTime() {
+        let today = new Date();
+        hours = today.getHours();
+        minutes = today.getMinutes();
+
+        if (hours < 10) {
+            hours = "0" + hours;
+        }
+
+        if (minutes < 10) {
+            minutes = "0" + minutes;
+        }
+
+        let time = hours + ":" + minutes;
+        return time;
+    }
+
+    // Gets the first message
+    function firstBotMessage() {
+        let firstMessage = "How's it going?"
+        document.getElementById("botStarterMessage").innerHTML = '<p class="botText"><span>' + firstMessage + '</span></p>';
+
+        let time = getTime();
+
+        $("#chat-timestamp").append(time);
+        document.getElementById("userInput").scrollIntoView(false);
+    }
+
+    firstBotMessage();
+
+    // Retrieves the response
+    function getHardResponse(userText) {
+        let botResponse = getBotResponse(userText);
+        let botHtml = '<p class="botText"><span>' + botResponse + '</span></p>';
+        $("#chatbox").append(botHtml);
+
+        document.getElementById("chat-bar-bottom").scrollIntoView(true);
+    }
+
+    //Gets the text text from the input box and processes it
+    function getResponse() {
+        let userText = $("#textInput").val();
+
+        if (userText == "") {
+            userText = "I love Code Palace!";
+        }
+
+        let userHtml = '<p class="userText"><span>' + userText + '</span></p>';
+
+        $("#textInput").val("");
+        $("#chatbox").append(userHtml);
+        document.getElementById("chat-bar-bottom").scrollIntoView(true);
+
+        setTimeout(() => {
+            getHardResponse(userText);
+        }, 1000)
+
+    }
+
+    // Handles sending text via button clicks
+    function buttonSendText(sampleText) {
+        let userHtml = '<p class="userText"><span>' + sampleText + '</span></p>';
+
+        $("#textInput").val("");
+        $("#chatbox").append(userHtml);
+        document.getElementById("chat-bar-bottom").scrollIntoView(true);
+
+        //Uncomment this if you want the bot to respond to this buttonSendText event
+        // setTimeout(() => {
+        //     getHardResponse(sampleText);
+        // }, 1000)
+    }
+
+    function sendButton() {
+        getResponse();
+    }
+
+    function heartButton() {
+        buttonSendText("Heart clicked!")
+    }
+
+    // Press enter to send a message
+    $("#textInput").keypress(function (e) {
+        if (e.which == 13) {
+            getResponse();
+        }
+    });
+
+    function getBotResponse(input) {
+        var input = input.toLowerCase();
+        //rock paper scissors
+        if (input == "rock") {
+            return "paper";
+        } else if (input == "paper") {
+            return "scissors";
+        } else if (input == "scissors") {
+            return "rock";
+        }
+
+        // Simple responses
+        if (input == "hello" || input == "hi") {
+            return "Hello there!";
+        } else if (input == "goodbye" || input == "bye") {
+            return "Talk to you later!";
+        } else if (input == "help" || input == "contact me") {
+            window.open("https://forms.gle/EUFqN7ytCjpfXNPY8", '_blank').focus();
+            return "Check Your Browser Tabs";
+        } else if (input == "games" || input == "bored") {
+            window.open("{% url 'games' %}", "_self");
+            return "Enjoy your Play!"
+        } else if (input == "blogs" || input == "read") {
+            window.open("{% url 'blogs' %}", "_self");
+            return "Read your favourite blogs!";
+        } else if (input == "phone number" || input == "emailid" || input == "contact you") {
+
+            return "Email id :- aaryanrlondhe99@gmail.com Phone Number: +91 7045854423";
+
+        } else if (input == "download" || input == "ebooks" || input == "dictionary") {
+            window.open("{% url 'download' %}", "_self");
+            return "Check Your Browser Tabs";
+        } else if (input == "about us" || input == "aboutus" || input == "about") {
+            window.open("{% url 'aboutus' %}", "_self");
+            return "Check Your Browser Tabs";
+        } else if (input == "privacy" || input == "cookies" || input == "data") {
+            window.open("{% url 'privacy' %}", "_self");
+            return "Check Your Browser Tabs";
+        } else if (input == "download" || input == "ebooks" || input == "dictionary") {
+            window.open("{% url 'download' %}", "_self");
+            return "Check Your Browser Tabs";
+        } else {
+            return "Try asking something else!";
+        }
+    }
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.sidenav').sidenav();
+    });
+</script>
+</body>
+</html>

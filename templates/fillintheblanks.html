@@ -1,0 +1,1254 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {#    <link rel= "stylesheet" href ="style.css">#}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bitter:wght@376&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" type="image/ico" href="{% static 'images/logo.ico' %}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        @keyframes slideInFromLeft {
+            0% {
+                transform: translateX(100%);
+            }
+            100% {
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInFromRight {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(0);
+            }
+        }
+
+        body {
+            font-family: 'Bitter', serif;
+        }
+
+        main {
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            font-size: 19px;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #fcfbfa;
+        {#background: url('../assets/background_image.jpg');#}{#background-color : black;#} background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .game-quiz-container {
+            font-size: 33px;
+            width: 66rem;
+            height: 30rem;
+            background-color: #0083c4;
+            display: flex;
+            flex-direction: column;
+            color: #fcfcfc;
+            align-items: center;
+            justify-content: space-around;
+            border-radius: 40px;
+            margin-top: 20px;
+        }
+
+        .game-details-container {
+            width: 80%;
+            height: 4rem;
+            font-size: 30px;
+            color: #fcfcfc;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .game-details-container h1 {
+            font-size: 23px;
+        }
+
+        .game-question-container {
+            width: 80%;
+            font-size: 23px;
+            height: 8rem;
+            background-color: #066084;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid darkgray;
+            border-radius: 25px;
+            animation: 2s ease-out 0s 1 slideInFromLeft;
+        }
+
+        .game-question-container h1 {
+            font-size: 33px;
+            text-align: center;
+            padding: 3px;
+
+        }
+
+        .game-options-container {
+            width: 80%;
+            height: 12rem;
+            font-size: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-around;
+            animation: 2s ease-out 0s 1 slideInFromRight;
+        }
+
+        .game-options-container span {
+            width: 45%;
+            height: 3rem;
+            border: 2px solid darkgray;
+            font-size: 30px;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        span label {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 30px;
+            transition: transform 0.3s;
+            font-weight: 600;
+            color: #fcfcfc;
+
+        }
+
+        span label:hover {
+            -ms-transform: scale(1.12);
+            -webkit-transform: scale(1.12);
+            transform: scale(1.12);
+            color: #f59d15;
+            background: #066084;
+        }
+
+        input[type="radio"] {
+            position: relative;
+            display: none;
+        }
+
+
+        input[type=radio]:checked ~ .option {
+            color: #f59d15;
+            background: #066084;
+        }
+
+        .next-button-container {
+            width: 50%;
+            height: 3rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .next-button-container button {
+            width: 10rem;
+            height: 3.2rem;
+            border-radius: 13px;
+            background: #EE060A;
+            color: rgb(25, 25, 25);
+            font-family: 'Bitter', serif;
+            font-weight: 600;
+            font-size: 21px;
+            border: 4px solid gray;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .next-button-container button:hover {
+            background-color: #066084;
+            color: #fcfcfc;
+        }
+
+        .modal-container {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+        {#background-color: rgb(0,0,0);#} background-color: white;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            -webkit-animation: fadeIn 1.2s ease-in-out;
+            animation: fadeIn 1.2s ease-in-out;
+        }
+
+        .modal-content-container {
+            height: 22rem;
+            width: 25rem;
+            background-color: #066084;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-around;
+            border-radius: 25px;
+        }
+
+        .modal-content-container h1 {
+            font-size: 1.3rem;
+            height: 3rem;
+            color: lightgray;
+            text-align: center;
+        }
+
+        .grade-details {
+            width: 15rem;
+            height: 10rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-around;
+        }
+
+        .grade-details p {
+            color: white;
+            text-align: center;
+        }
+
+        .modal-button-container {
+            height: 2rem;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-button-container button {
+            width: 10rem;
+            height: 2rem;
+            background: none;
+            outline: none;
+            border: 1px solid rgb(252, 242, 241);
+            color: white;
+            font-size: 1.3rem;
+            cursor: pointer;
+            border-radius: 20px;
+        }
+
+        .modal-button-container button:hover {
+            background-color: rgb(83, 82, 82);
+        }
+
+        @media (min-width: 300px) and (max-width: 350px) {
+            .game-quiz-container {
+                width: 90%;
+                height: 80vh;
+            }
+
+            .game-details-container h1 {
+                font-size: 0.8rem;
+            }
+
+            .game-question-container {
+                height: 6rem;
+            }
+
+            .game-question-container h1 {
+                font-size: 0.9rem;
+            }
+
+            .game-options-container span {
+                width: 90%;
+                height: 2.5rem;
+            }
+
+            .game-options-container span label {
+                font-size: 30px;
+            }
+
+            .modal-content-container {
+                width: 90%;
+                height: 25rem;
+            }
+
+            .modal-content-container h1 {
+                font-size: 23px;
+            }
+        }
+
+        @media (min-width: 350px) and (max-width: 700px) {
+            .game-quiz-container {
+                width: 90%;
+                height: 80vh;
+            }
+
+            .game-details-container h1 {
+                font-size: 1rem;
+            }
+
+            .game-question-container {
+                height: 8rem;
+            }
+
+            .game-question-container h1 {
+                font-size: 0.9rem;
+            }
+
+            .game-options-container span {
+                width: 90%;
+            }
+
+            .modal-content-container {
+                width: 90%;
+                height: 25rem;
+            }
+
+            .modal-content-container h1 {
+                font-size: 1.2rem;
+            }
+        }
+
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @-webkit-keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        #nav {
+            background-color: #066084;
+        }
+        #games:hover{
+            background-color: white;
+            color: #066084;
+            font-weight: bold;
+        }
+        a:hover {
+            color: black;
+        }
+
+        .chat-bar-collapsible {
+            position: fixed;
+            bottom: 0;
+            right: 50px;
+
+            box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .collapsible {
+            background-color: #066084;
+            color: white;
+            cursor: pointer;
+            padding: 18px;
+            width: 250px;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            border-radius: 10px 10px 0px 0px;
+        {#border: 3px solid white;#}{#border-bottom: none;#}
+        }
+
+        .content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+            background-color: black;
+        }
+
+        .full-chat-block {
+            width: 350px;
+
+            background: white;
+            text-align: center;
+            overflow: auto;
+            scrollbar-width: none;
+            height: max-content;
+            transition: max-height 0.2s ease-out;
+        }
+
+        .outer-container {
+            min-height: 300px;
+            bottom: 0%;
+            width: 250px;
+            position: relative;
+            background-color: white;
+        }
+
+
+        .chat-container {
+            max-height: 300px;
+            width: 100%;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            scroll-behavior: smooth;
+            border-radius: 10px 10px 0px 0px;
+            hyphens: auto;
+        }
+
+        .chat-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .chat-bar-input-block {
+            display: flex;
+            float: left;
+            box-sizing: border-box;
+            justify-content: space-between;
+            width: 100%;
+            align-items: center;
+            background-color: rgb(235, 235, 235);
+            border-radius: 10px 10px 0px 0px;
+            padding: 10px 0px 10px 10px;
+        }
+
+        .chat-bar-icons {
+            display: flex;
+            justify-content: space-evenly;
+            box-sizing: border-box;
+            width: 25%;
+            float: right;
+            font-size: 20px;
+        }
+
+        #chat-icon:hover {
+            opacity: .7;
+        }
+
+        /* Chat bubbles */
+
+        #userInput {
+            width: 75%;
+        }
+
+        .input-box {
+            float: left;
+            border: none;
+            box-sizing: border-box;
+            width: 100%;
+            border-radius: 10px;
+            padding: 10px;
+            font-size: 16px;
+            color: #000;
+            background-color: white;
+            outline: none
+        }
+
+        .userText {
+            color: white;
+            font-family: Helvetica;
+            font-size: 16px;
+            font-weight: normal;
+            text-align: right;
+            clear: both;
+        }
+
+        .userText span {
+            line-height: 1.5em;
+            display: inline-block;
+            background: #066084;
+            padding: 10px;
+            border-radius: 8px;
+            border-bottom-right-radius: 2px;
+            max-width: 80%;
+            margin-right: 10px;
+            animation: floatup .5s forwards
+        }
+
+        .botText {
+            color: #000;
+            font-family: Helvetica;
+            font-weight: normal;
+            font-size: 16px;
+            text-align: left;
+            width: 280px;
+        }
+
+        .botText span {
+            line-height: 1.5em;
+            display: inline-block;
+            background: #e0e0e0;
+            padding: 10px;
+            border-radius: 8px;
+            border-bottom-left-radius: 2px;
+            max-width: 80%;
+            margin-left: 10px;
+            animation: floatup .5s forwards
+        }
+
+        @keyframes floatup {
+            from {
+                transform: translateY(14px);
+                opacity: .0;
+            }
+            to {
+                transform: translateY(0px);
+                opacity: 1;
+            }
+        }
+
+        @media screen and (max-width: 600px) {
+            .full-chat-block {
+                width: 100%;
+                border-radius: 0px;
+            }
+
+            .chat-bar-collapsible {
+                position: fixed;
+                bottom: 0px;
+                right: 0px;
+                width: 100%;
+            }
+
+            .collapsible {
+                width: 100%;
+                border: 0px;
+                border-top: 3px solid white;
+                border-radius: 0px;
+            }
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-family: Helvetica, sans-serif, Arial;
+        }
+        body {
+            margin: 0 auto;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            position: relative;
+
+
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        footer {
+
+            background: rgb(0, 0, 0);
+            height: auto;
+            width: 100%;
+            padding-top: 40px;
+            color: #fff;
+        }
+
+        .footer-content h3 {
+            font-size: 1.9rem;
+            font-weight: 500;
+            text-transform: capitalize;
+            line-height: 8rem;
+            text-align: center;
+            position: relative;
+            top: -60px;
+            color: #ffffff;
+
+
+        }
+
+        .footer-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .footer-bottom {
+            background: rgb(12, 35, 61);
+            width: 100%;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        .footer-bottom p {
+            font-size: 20px;
+            word-spacing: 2px;
+            text-transform: capitalize;
+        }
+
+        .footer-bottom span {
+            text-transform: uppercase;
+            opacity: .4;
+            font-weight: 200;
+        }
+
+        .footer-col {
+            width: 25%;
+            padding: 0 15px;
+        }
+
+        .footer-col h4 {
+            font-size: 18px;
+            color: #ffffff;
+            text-transform: capitalize;
+            margin-bottom: 28px;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .footer-col h4::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -7px;
+            background-color: #e91e63;
+            height: 2px;
+            box-sizing: border-box;
+            width: 50px;
+        }
+
+        .footer-col ul li:not(:last-child) {
+            margin-bottom: 10px;
+        }
+
+        .footer-col ul li a {
+            font-size: 20px;
+            text-transform: capitalize;
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 300;
+            color: #bbbbbb;
+            display: block;
+            transition: all 0.3s ease;
+        }
+
+        .footer-col ul li a:hover {
+            color: #ffffff;
+            padding-left: 8px;
+        }
+
+        .footer-col .social-links a {
+            display: inline-block;
+            font-size: 15px;
+            height: 40px;
+            width: 40px;
+            background-color: rgb(253, 10, 144);
+            margin: 0 8px 8px 0;
+            text-align: center;
+            line-height: 40px;
+            border-radius: 50%;
+            color: #ffffff;
+            transition: all 0.5s ease;
+        }
+
+        .footer-col .social-links a:hover {
+            color: #24262b;
+            background-color: #ffffff;
+        }
+
+        /*responsive*/
+        @media (max-width: 767px) {
+            .footer-col {
+                width: 50%;
+                margin-bottom: 30px;
+            }
+        }
+
+        @media (max-width: 574px) {
+            .footer-col {
+                width: 100%;
+            }
+        }
+    </style>
+    <title>Fill in The Blanks</title>
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<body onload="NextQuestion(0)">
+
+<main>
+    <nav id="nav">
+        <div class="nav-wrapper">
+            <div class="container">
+                <a href="/" class="brand-logo">Modern Dictionary</a>
+                <ul id="nav-mobile" class="right hide-on-med-and-down">
+                    <li><a href="{% url 'games' %}" id="games" style="font-size: 21px;">Back</a></li>
+                    <li><a href="{% url 'blogs' %}" id="games" style="font-size: 21px;">Blogs</a></li>
+                    <li><a href="{% url 'download' %}" id="games" style="font-size: 21px;">Download</a></li>
+                    <li><a href="/" style="font-size: 21px;" id="games">Home</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <!-- creating a modal for when quiz ends -->
+        <div class="modal-container" id="score-modal">
+
+            <div class="modal-content-container">
+
+                <h1>Congratulations, Quiz Completed.</h1>
+
+                <div class="grade-details">
+                    <p>Attempts : 10</p>
+                    <p>Wrong Answers : <span id="wrong-answers"></span></p>
+                    <p>Right Answers : <span id="right-answers"></span></p>
+                    <p>Grade : <span id="grade-percentage"></span>%</p>
+                    <p><span id="remarks"></span></p>
+                </div>
+
+                <div class="modal-button-container">
+                    <button onclick="closeScoreModal()">Continue</button>
+                </div>
+
+            </div>
+        </div>
+        <div class="game-quiz-container">
+
+            <div class="game-details-container">
+                <h1>Score : <span id="player-score"></span> / 10</h1>
+                <h1> Question : <span id="question-number"></span> / 10</h1>
+            </div>
+
+            <div class="game-question-container">
+                <h1 id="display-question"></h1>
+            </div>
+
+            <div class="game-options-container">
+
+                <div class="modal-container" id="option-modal">
+
+                    <div class="modal-content-container">
+                        <h1>Please Pick An Option</h1>
+
+                        <div class="modal-button-container">
+                            <button onclick="closeOptionModal()">Continue</button>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <span>
+                    <input type="radio" id="option-one" name="option" class="radio" value="optionA"/>
+                    <label for="option-one" class="option" id="option-one-label"></label>
+                </span>
+
+
+                <span>
+                    <input type="radio" id="option-two" name="option" class="radio" value="optionB"/>
+                    <label for="option-two" class="option" id="option-two-label"></label>
+                </span>
+
+
+                <span>
+                    <input type="radio" id="option-three" name="option" class="radio" value="optionC"/>
+                    <label for="option-three" class="option" id="option-three-label"></label>
+                </span>
+
+
+                <span>
+                    <input type="radio" id="option-four" name="option" class="radio" value="optionD"/>
+                    <label for="option-four" class="option" id="option-four-label"></label>
+                </span>
+
+
+            </div>
+
+            <div class="next-button-container">
+                <button onclick="handleNextQuestion()">Next Question</button>
+            </div>
+
+        </div>
+    </div>
+</main>
+<!-- Compiled and minified CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+<!-- Compiled and minified JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+<!-- partial -->
+<script>
+    const questions = [
+        {
+            question: "Children enjoy _____ the TV programs",
+            optionA: "to look at",
+            optionB: "watching",
+            optionC: "to see",
+            optionD: "to watch",
+            correctOption: "optionB"
+        },
+
+        {
+            question: "Today student should be reconciled _____the way things are changing.",
+            optionA: "for",
+            optionB: "at",
+            optionC: "with",
+            optionD: "to",
+            correctOption: "optionD"
+        },
+
+        {
+            question: "In a classroom students are taught to love _____",
+            optionA: "one another",
+            optionB: "altogether",
+            optionC: "each other",
+            optionD: "all others",
+            correctOption: "optionA"
+        },
+
+        {
+            question: "A  ____ of Japanese artists stepped off the coach amidst warm welcome",
+            optionA: "bank",
+            optionB: "gang",
+            optionC: "troop",
+            optionD: "troupe",
+            correctOption: "optionD"
+        },
+
+        {
+            question: "You have all come well prepared. I ____ you to pass this exam.",
+            optionA: "hope",
+            optionB: "expect",
+            optionC: "wish",
+            optionD: "except",
+            correctOption: "optionB"
+        },
+
+        {
+            question: "For all his ____he is a ____",
+            optionA: "tricks cheat",
+            optionB: "stupidity, fool",
+            optionC: "wealth, miser",
+            optionD: " health, player",
+            correctOption: "optionC"
+        },
+
+        {
+            question: " It took the child a long time to recover ____ the shock ",
+            optionA: "over",
+            optionB: "about",
+            optionC: "under",
+            optionD: "from",
+            correctOption: "optionD"
+        },
+
+        {
+            question: "Tourists always enjoyed ____ the setting Sun in the Darjeeling Hills. ",
+            optionA: "in seeing",
+            optionB: "seeing",
+            optionC: "to watch",
+            optionD: "watching",
+            correctOption: "optionD"
+        },
+
+        {
+            question: " When he died, Ramanujan ____behind three notebooks. ",
+            optionA: "left",
+            optionB: "leaves",
+            optionC: "was leaving",
+            optionD: "had left want",
+            correctOption: "optionA"
+        },
+
+        {
+            question: "She was relieved to hear from the doctor that the tumor was not malignant; it was _____",
+            optionA: "discovered",
+            optionB: "sizeable",
+            optionC: "exposed",
+            optionD: "benign",
+            correctOption: "optionD"
+        }
+
+    ]
+
+
+    let shuffledQuestions = [] //empty array to hold shuffled selected questions
+
+    function handleQuestions() {
+        //function to shuffle and push 10 questions to shuffledQuestions array
+        while (shuffledQuestions.length <= 9) {
+            const random = questions[Math.floor(Math.random() * questions.length)]
+            if (!shuffledQuestions.includes(random)) {
+                shuffledQuestions.push(random)
+
+            }
+        }
+    }
+
+
+    let questionNumber = 1
+    let playerScore = 0
+    let wrongAttempt = 0
+    let indexNumber = 0
+
+    // function for displaying next question in the array to dom
+    function NextQuestion(index) {
+        handleQuestions()
+        const currentQuestion = shuffledQuestions[index]
+        document.getElementById("question-number").innerHTML = questionNumber
+        document.getElementById("player-score").innerHTML = playerScore
+        document.getElementById("display-question").innerHTML = currentQuestion.question;
+        document.getElementById('display-question').style.animation = "3s ease-out 0s 1 slideInFromLeft"
+        document.getElementById("option-one-label").innerHTML = currentQuestion.optionA;
+        document.getElementById('option-one-label').style.animation = "3s ease-out 0s 1 slideInFromRight"
+        document.getElementById("option-two-label").innerHTML = currentQuestion.optionB;
+        document.getElementById('option-two-label').style.animation = "3s ease-out 0s 1 slideInFromRight"
+        document.getElementById("option-three-label").innerHTML = currentQuestion.optionC;
+        document.getElementById('option-three-label').style.animation = "3s ease-out 0s 1 slideInFromRight"
+        document.getElementById("option-four-label").innerHTML = currentQuestion.optionD;
+        document.getElementById('option-four-label').style.animation = "3s ease-out 0s 1 slideInFromRight"
+
+    }
+
+
+    function checkForAnswer() {
+        const currentQuestion = shuffledQuestions[indexNumber] //gets current Question
+        const currentQuestionAnswer = currentQuestion.correctOption //gets current Question's answer
+        const options = document.getElementsByName("option"); //gets all elements in dom with name of 'option' (in this the radio inputs)
+        let correctOption = null
+
+        options.forEach((option) => {
+            if (option.value === currentQuestionAnswer) {
+                //get's correct's radio input with correct answer
+                correctOption = option.labels[0].id
+            }
+        })
+
+        //checking to make sure a radio input has been checked or an option being chosen
+        if (options[0].checked === false && options[1].checked === false && options[2].checked === false && options[3].checked == false) {
+            document.getElementById('option-modal').style.display = "flex"
+        }
+
+        //checking if checked radio button is same as answer
+        options.forEach((option) => {
+            if (option.checked === true && option.value === currentQuestionAnswer) {
+                document.getElementById(correctOption).style.backgroundColor = "green"
+                playerScore++
+                indexNumber++
+                //set to delay question number till when next question loads
+                setTimeout(() => {
+                    questionNumber++
+                }, 1000)
+            } else if (option.checked && option.value !== currentQuestionAnswer) {
+                const wrongLabelId = option.labels[0].id
+                document.getElementById(wrongLabelId).style.backgroundColor = "red"
+                document.getElementById(correctOption).style.backgroundColor = "green"
+                wrongAttempt++
+                indexNumber++
+                //set to delay question number till when next question loads
+                setTimeout(() => {
+                    questionNumber++
+                }, 3000)
+            }
+        })
+    }
+
+
+    //called when the next button is called
+    function handleNextQuestion() {
+        checkForAnswer()
+        unCheckRadioButtons()
+        //delays next question displaying for a second
+        setTimeout(() => {
+            if (indexNumber <= 9) {
+                NextQuestion(indexNumber)
+
+            } else {
+                handleEndGame()
+            }
+            resetOptionBackground()
+        }, 2000);
+    }
+
+    //sets options background back to null after display the right/wrong colors
+    function resetOptionBackground() {
+        const options = document.getElementsByName("option");
+        options.forEach((option) => {
+            document.getElementById(option.labels[0].id).style.backgroundColor = ""
+        })
+    }
+
+    // unchecking all radio buttons for next question(can be done with map or foreach loop also)
+    function unCheckRadioButtons() {
+        const options = document.getElementsByName("option");
+        for (let i = 0; i < options.length; i++) {
+            options[i].checked = false;
+        }
+    }
+
+    // function for when all questions being answered
+    function handleEndGame() {
+        let remark = null
+        let remarkColor = null
+
+        // condition check for player remark and remark color
+        if (playerScore <= 3) {
+            remark = "Bad Grades, Keep Practicing."
+            remarkColor = "red"
+        } else if (playerScore >= 4 && playerScore < 7) {
+            remark = "Average Grades, You can do better."
+            remarkColor = "orange"
+        } else if (playerScore >= 7) {
+            remark = "Excellent, Keep the good work going!!!"
+            remarkColor = "white"
+        }
+        const playerGrade = (playerScore / 10) * 100
+
+        //data to display to score board
+        document.getElementById('remarks').innerHTML = remark
+        document.getElementById('remarks').style.color = remarkColor
+        document.getElementById('grade-percentage').innerHTML = playerGrade
+        document.getElementById('wrong-answers').innerHTML = wrongAttempt
+        document.getElementById('right-answers').innerHTML = playerScore
+        document.getElementById('score-modal').style.display = "flex"
+
+    }
+
+    //closes score modal and resets game
+    function closeScoreModal() {
+        questionNumber = 1
+        playerScore = 0
+        wrongAttempt = 0
+        indexNumber = 0
+        shuffledQuestions = []
+        NextQuestion(indexNumber)
+        document.getElementById('score-modal').style.display = "none"
+    }
+
+    //function to close warning modal
+    function closeOptionModal() {
+        document.getElementById('option-modal').style.display = "none"
+    }
+</script>
+<div id="google_translate_element"></div>
+<footer class="footer">
+    <div class="container" id="">
+        <div class="row">
+            <div class="footer-col">
+                <h4>company</h4>
+                <ul>
+                    <li><a href="{% url 'aboutus' %}">about us</a></li>
+                    <li><a href="{% url 'privacy' %}">privacy policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>get help</h4>
+                <ul>
+                    <li><a href="https://docs.google.com/forms/d/e/1FAIpQLSfGF14XUm0-lV9cmSUeQFvJHgeCUu462_4_Siz8KGUpjuOdkw/viewform" target="_blank">Customer care</a></li>
+                    <li><a href="https://docs.google.com/forms/d/e/1FAIpQLSfGF14XUm0-lV9cmSUeQFvJHgeCUu462_4_Siz8KGUpjuOdkw/viewform" target="_blank">Report</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+
+            </div>
+            <div class="footer-col">
+                <h4>follow us</h4>
+                <div class="social-links" style="display: flex;justify-content: space-evenly;">
+                    <a href="https://www.facebook.com/profile.php?id=100074285931176" target="_blank"><i
+                            class="fab fa-facebook-f"></i></a>
+                    <a href="https://twitter.com/ModernDictiona1" target="_blank"><i class="fab fa-twitter"></i></a>
+                    <a href="https://www.instagram.com/moderndictionary5/" target="_blank"><i
+                            class="fab fa-instagram"></i></a>
+                    <a href="https://www.linkedin.com/in/modern-dictionary-b713b1225/" target="_blank"><i
+                            class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <h6>Copyright &copy; 2021 moderndictionary.com</h6>
+    </div>
+</footer>
+
+<script type="text/javascript">
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+            pageLanguage: 'en', // set default for your need
+            includedLanguages: 'bg,bs,de,en,es,fr,hr,hu,it,ja,ko,mk,nl,ro,ru,sl,sq,sr,zh-CN,mr', // include other languages per need
+            layout: google.translate.TranslateElement.InlineLayout.SIMPLE, // style or type of the box
+            gaTrack: true, // otherwise false if not using GA
+            gaId: 'UA-XXXXXXX-X' // your Google Analytics tracking ID, not needed if not using GA
+        }, 'google_translate_element');
+    }
+</script>
+<script type="text/javascript"
+        src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<script>
+    // Collapsible
+    var coll = document.getElementsByClassName("collapsible");
+
+    for (let i = 0; i < coll.length; i++) {
+        coll[i].addEventListener("click", function () {
+            this.classList.toggle("active");
+
+            var content = this.nextElementSibling;
+
+            if (content.style.maxHeight) {
+                content.style.maxHeight = null;
+            } else {
+                content.style.maxHeight = content.scrollHeight + "px";
+            }
+
+        });
+    }
+
+    function getTime() {
+        let today = new Date();
+        hours = today.getHours();
+        minutes = today.getMinutes();
+
+        if (hours < 10) {
+            hours = "0" + hours;
+        }
+
+        if (minutes < 10) {
+            minutes = "0" + minutes;
+        }
+
+        let time = hours + ":" + minutes;
+        return time;
+    }
+
+    // Gets the first message
+    function firstBotMessage() {
+        let firstMessage = "How's it going?"
+        document.getElementById("botStarterMessage").innerHTML = '<p class="botText"><span>' + firstMessage + '</span></p>';
+
+        let time = getTime();
+
+        $("#chat-timestamp").append(time);
+        document.getElementById("userInput").scrollIntoView(false);
+    }
+
+    firstBotMessage();
+
+    // Retrieves the response
+    function getHardResponse(userText) {
+        let botResponse = getBotResponse(userText);
+        let botHtml = '<p class="botText"><span>' + botResponse + '</span></p>';
+        $("#chatbox").append(botHtml);
+
+        document.getElementById("chat-bar-bottom").scrollIntoView(true);
+    }
+
+    //Gets the text text from the input box and processes it
+    function getResponse() {
+        let userText = $("#textInput").val();
+
+        if (userText == "") {
+            userText = "I love Code Palace!";
+        }
+
+        let userHtml = '<p class="userText"><span>' + userText + '</span></p>';
+
+        $("#textInput").val("");
+        $("#chatbox").append(userHtml);
+        document.getElementById("chat-bar-bottom").scrollIntoView(true);
+
+        setTimeout(() => {
+            getHardResponse(userText);
+        }, 1000)
+
+    }
+
+    // Handles sending text via button clicks
+    function buttonSendText(sampleText) {
+        let userHtml = '<p class="userText"><span>' + sampleText + '</span></p>';
+
+        $("#textInput").val("");
+        $("#chatbox").append(userHtml);
+        document.getElementById("chat-bar-bottom").scrollIntoView(true);
+
+        //Uncomment this if you want the bot to respond to this buttonSendText event
+        // setTimeout(() => {
+        //     getHardResponse(sampleText);
+        // }, 1000)
+    }
+
+    function sendButton() {
+        getResponse();
+    }
+
+    function heartButton() {
+        buttonSendText("Heart clicked!")
+    }
+
+    // Press enter to send a message
+    $("#textInput").keypress(function (e) {
+        if (e.which == 13) {
+            getResponse();
+        }
+    });
+
+    function getBotResponse(input) {
+        var input = input.toLowerCase();
+        //rock paper scissors
+        if (input == "rock") {
+            return "paper";
+        } else if (input == "paper") {
+            return "scissors";
+        } else if (input == "scissors") {
+            return "rock";
+        }
+
+        // Simple responses
+        if (input == "hello" || input == "hi") {
+
+            return "Hello there!";
+        } else if (input == "goodbye" || input == "bye") {
+            return "Talk to you later!";
+        } else if (input == "help" || input == "contact me") {
+            window.open("https://forms.gle/EUFqN7ytCjpfXNPY8", '_blank').focus();
+            return "Check Your Browser Tabs";
+        } else if (input == "games" || input == "bored") {
+            window.open("{% url 'games' %}", "_self");
+            return "Enjoy your Play!"
+        } else if (input == "blogs" || input == "read") {
+            window.open("{% url 'blogs' %}", "_self");
+            return "Read your favourite blogs!";
+        } else if (input == "phone number" || input == "emailid" || input == "contact you") {
+
+            return "Email id :- aaryanrlondhe99@gmail.com Phone Number: +91 7045854423";
+
+        } else if (input == "download" || input == "ebooks" || input == "dictionary") {
+            window.open("{% url 'download' %}", "_self");
+            return "Check Your Browser Tabs";
+        } else {
+            return "Try asking something else!";
+        }
+    }
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+</body>
+</html>

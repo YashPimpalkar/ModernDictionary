@@ -1,0 +1,544 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bitter:wght@376&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" type="image/ico" href="{% static 'images/logo.ico' %}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <title>How strong is your Vocabulary?</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Bitter', serif;
+        }
+
+        #nav {
+            background-color: #066084;
+        }
+
+        @keyframes slideInFromLeft {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInFromBottom {
+            0% {
+                transform: translateY(-100%);
+            }
+            100% {
+                transform: translateX(0);
+            }
+        }
+
+        a:hover {
+            color: black;
+        }
+
+        #game {
+            font-size: 20px;
+        }
+
+        #game:hover {
+            background-color: white;
+            color: #066084;
+            font-weight: bold;
+        }
+
+        #word {
+            padding-bottom: 7%;
+            color: #ffffff;
+            animation: 2s ease-out 0s 1 slideInFromLeft;
+        }
+
+        #cquestion {
+            color: #ffffff;
+            animation: 2s ease-out 0s 1 slideInFromLeft;
+        }
+
+        #true {
+            background-color: #0083c4;
+            color: #ffffff;
+            font-family: 'Bitter', serif;
+            font-size: 20px;
+            border-radius: 15px;
+            animation: 2s ease-in 0s 1 slideInFromLeft;
+        }
+
+        #true:hover {
+            background-color: white;
+            color: #0083c4;
+            font-weight: bolder;
+        }
+
+        #false {
+            background-color: #0083c4;
+            color: #ffffff;
+            font-family: 'Bitter', serif;
+            font-size: 20px;
+            border-radius: 15px;
+            animation: 2s ease-in 0s 1 slideInFromLeft;
+        }
+
+        #false:hover {
+            background-color: white;
+            color: #0083c4;
+            font-weight: bolder;
+        }
+
+        .vocabGame {
+            margin-top: 3em;
+        }
+
+        #box {
+            background-color: #066084;
+            border-radius: 20px;
+            margin-bottom: 40px;
+        }
+
+        #next {
+            background-color: #0083c4;
+            color: #ffffff;
+            font-family: 'Bitter', serif;
+            font-size: 20px;
+            border-radius: 15px;
+            margin: 5px 90px;
+            animation: 2s ease-in 0s 1 slideInFromBottom;
+        }
+
+        #next:hover {
+            background-color: white;
+            color: #0083c4;
+            font-weight: bolder;
+        }
+
+        .center button {
+            margin: 30px 90px;
+            background-color: blue;
+        }
+
+        .center button:hover {
+            background-color: #FFC36A;
+        }
+
+        h4 {
+            text-align: center;
+        }
+        #games{
+            font-size: 21px;
+        }
+        #games:hover{
+            color: #066084;
+            background-color: white;
+            font-weight: bold;
+        }
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            position: relative;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        footer {
+
+            background: rgb(0, 0, 0);
+            height: auto;
+            width: 100%;
+            padding-top: 40px;
+            color: #fff;
+        }
+
+        .footer-content h3 {
+            font-size: 1.9rem;
+            font-weight: 500;
+            text-transform: capitalize;
+            line-height: 8rem;
+            text-align: center;
+            position: relative;
+            top: -60px;
+            color: #ffffff;
+
+
+        }
+
+        .footer-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .footer-bottom {
+            background: rgb(12, 35, 61);
+            width: 100%;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        .footer-bottom p {
+            font-size: 20px;
+            word-spacing: 2px;
+            text-transform: capitalize;
+        }
+
+        .footer-bottom span {
+            text-transform: uppercase;
+            opacity: .4;
+            font-weight: 200;
+        }
+
+        .footer-col {
+            width: 25%;
+            padding: 0 15px;
+        }
+
+        .footer-col h4 {
+            font-size: 18px;
+            color: #ffffff;
+            text-transform: capitalize;
+            margin-bottom: 28px;
+            font-weight: 500;
+            position: relative;
+
+        }
+
+        .footer-col h4::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -7px;
+            background-color: #e91e63;
+            height: 2px;
+            box-sizing: border-box;
+            width: 50px;
+        }
+
+        .footer-col ul li:not(:last-child) {
+            margin-bottom: 10px;
+        }
+
+        .footer-col ul li a {
+            font-size: 20px;
+            text-transform: capitalize;
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 300;
+            color: #bbbbbb;
+            display: block;
+            transition: all 0.3s ease;
+        }
+
+        .footer-col ul li a:hover {
+            color: #ffffff;
+            padding-left: 8px;
+        }
+
+        .footer-col .social-links a {
+            display: inline-block;
+            height: 40px;
+            width: 40px;
+            background-color: rgb(253, 10, 144);
+            margin: 0 8px 8px 0;
+            text-align: center;
+            line-height: 40px;
+            border-radius: 50%;
+            color: #ffffff;
+            transition: all 0.5s ease;
+        }
+
+        .footer-col .social-links a:hover {
+            color: #24262b;
+            background-color: #ffffff;
+        }
+
+        /*responsive*/
+        @media (max-width: 767px) {
+            .footer-col {
+                width: 50%;
+                margin-bottom: 30px;
+            }
+        }
+
+        @media (max-width: 574px) {
+            .footer-col {
+                width: 100%;
+            }
+        }
+
+        @media screen and (max-width: 1000px) {
+            #logo{
+                font-size: 19px;
+            }
+            #games {
+                font-size: 20px;
+                padding: 20px;
+            }
+            #menu {
+                font-size: 20px;
+            }
+            #true{
+                font-size: 15px;
+
+            }
+
+            #false{
+                font-size: 15px;
+            }
+            #next{
+                font-size: 15px;
+            }
+            body h1{
+                font-size: 35px;
+            }
+            body h4{
+                font-size: 30px;
+            }
+        }
+        @media screen and (max-width: 320px) {
+            #logo{
+                font-size: 17px;
+            }
+            #true i{
+                display: none;
+            }
+            #false i{
+                display: none;
+            }
+            #next i{
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body onload="nextQuestion()">
+
+<main>
+    <nav id="nav">
+        <div class="nav-wrapper">
+            <div class="container">
+                <a href="/" class="brand-logo" id="logo">Modern Dictionary</a>
+                <a href="/" class="sidenav-trigger" data-target="mobile-nav">
+                    <i class="material-icons" id="menu">menu</i>
+                </a>
+                <ul id="nav-mobile" class="right hide-on-med-and-down">
+                    <li><a href="{% url 'games' %}" id="games">Back</a></li>
+                    <li><a href="{% url 'blogs' %}" id="games">Blogs</a></li>
+                    <li><a href="{% url 'download' %}" id="games">Download</a></li>
+                    <li><a href="/" id="games">Home</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <ul class="sidenav" id="mobile-nav">
+        <li><a href="{% url 'games' %}" id="games">Back</a></li>
+        <li><a href="{% url 'blogs' %}" id="games">Blogs</a></li>
+        <li><a href="{% url 'download' %}" id="games">Download</a></li>
+        <li><a href="/" id="games">Home</a></li>
+    </ul>
+    <div class="container" id="box">
+        <div class="vocabGame" id="vocabGame">
+        </div>
+        <div class="center" id="center"></div>
+        <div class="center" id="nextbutton"></div>
+    </div>
+</main>
+
+<!-- Compiled and minified CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+<!-- Compiled and minified JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script>
+
+    function refreshh() {
+        setTimeout(
+            function () {
+                location.reload();
+            }, 3000);
+    }
+
+    const questions = {
+        'sad': {
+            'meaning': ' Affected by unhappiness or grief; sorrowful or mournful.',
+            'answer': 'true'
+        },
+        'happy': {
+            'meaning': ' Delighted, pleased, or glad, as over a particular thing',
+            'answer': 'true'
+        },
+        'anxious': {
+            'meaning': ' Having beauty; possessing qualities that give great pleasure or satisfaction to see, hear, think about, etc.; delighting the senses or mind',
+            'answer': 'false'
+        },
+        'beautiful': {
+            'meaning': ' Full of mental distress or uneasiness because of fear of danger or misfortune; greatly worried; apprehensive',
+            'answer': 'false'
+        },
+        'day': {
+            'meaning': 'The interval of light between two successive nights; the time between sunrise and sunset',
+            'answer': 'true'
+        },
+        'night': {'meaning': ' The period of darkness between sunset and sunrise.', 'answer': 'true'},
+        'adorable': {
+            'meaning': ' Having a sensation of whirling and a tendency to fall; giddy; vertiginous.',
+            'answer': 'false'
+        },
+        'dizzy': {'meaning': ' Very attractive or delightful; charming', 'answer': 'false'},
+        'brave': {'meaning': ' Possessing or exhibiting courage or courageous endurance.', 'answer': 'true'},
+        'healthy': {
+            'meaning': ' Possessing or enjoying good health or a sound and vigorous mentality',
+            'answer': 'true'
+        },
+        'energy': {
+            'meaning': 'The capacity for vigorous activity; available power',
+            'answer': 'true'
+        },
+        'perfect': {
+            'meaning': 'Conforming absolutely to the description or definition of an ideal type',
+            'answer': 'true'
+        },
+        'proud': {
+            'meaning': 'The state or feeling of being pleased.',
+            'answer': 'false'
+        },
+        'pleasure': {
+            'meaning': 'Feeling pleasure or satisfaction over something regarded as highly honorable or creditable to oneself (often followed by of, an infinitive, or a clause).',
+            'answer': 'false'
+        },
+        'essential': {
+            'meaning': 'Absolutely necessary; indispensable',
+            'answer': 'true'
+        },
+        'unusual': {
+            'meaning': 'Not usual, common, or ordinary; uncommon in amount or degree; exceptional',
+            'answer': 'true'
+        },
+        'popular': {
+            'meaning': 'Possessing outstanding quality or superior merit; remarkably good.',
+            'answer': 'false'
+        },
+        'excellent': {
+            'meaning': 'Regarded with favor, approval, or affection by people in general',
+            'answer': 'false'
+        },
+        'delight': {
+            'meaning': 'A high degree of pleasure or enjoyment; joy; rapture',
+            'answer': 'true'
+        },
+        'opportunity': {
+            'meaning': 'An appropriate or favorable time or occasion',
+            'answer': 'true'
+        },
+
+    }
+
+    const words = ['sad', 'happy', 'anxious', 'beautiful', 'day', 'night', 'adorable', 'dizzy', 'brave', 'healthy', 'energy', 'perfect', 'proud', 'pleasure', 'essential', 'unusual', 'popular', 'excellent', 'delight', 'opportunity'];
+    let currentWord = '';
+
+    // function start(){
+    //     document.getElementById('vocab').remove();
+    //     nextQuestion();
+    // }
+    function nextQuestion() {
+        currentWord = words[Math.floor(Math.random() * words.length)];
+        var currentQuestion = questions[currentWord]['meaning'];
+        var question = document.createElement('span');
+        question.setAttribute('id', 'question');
+        question.innerHTML = '<h1 style="text-align: center" id="word">' + currentWord.toUpperCase() + '</h1><h4 id="cquestion">' + currentQuestion + '</h4>';
+        document.getElementById('vocabGame').appendChild(question);
+        var buttonDiv = document.createElement('div');
+        buttonDiv.id = 'buttonDiv';
+        buttonDiv.innerHTML = '<button class="waves-effect waves-light btn-large" id="true" onclick="correctAnswer(this)"><i class="material-icons right">check</i>True</button> <button class="waves-effect waves-light btn-large" id="false" onclick="correctAnswer(this)"><i class="material-icons right">close</i>False</button>';
+        document.getElementById('center').appendChild(buttonDiv);
+
+        return currentQuestion, currentWord;
+    }
+
+    function correctAnswer(yourAnswer) {
+        var humanAnswer = yourAnswer.id;
+        var answer = questions[currentWord]['answer'];
+        if (humanAnswer == answer) {
+            document.getElementById(humanAnswer).style = 'background-color: green;';
+            {#refreshh();#}
+            document.getElementById('nextbutton').innerHTML = '<button class="waves-effect waves-light btn-large" id="next" onclick="location.reload()"><i class="material-icons right">send</i>Next</button>'
+        } else {
+            document.getElementById(humanAnswer).style = 'background-color: red;';
+            document.getElementById(answer).style = 'background-color: green;';
+            {#refreshh();#}
+            document.getElementById('nextbutton').innerHTML = '<button class="waves-effect waves-light btn-large" id="next" onclick="location.reload()"><i class="material-icons right">send</i>Next</button>'
+        }
+    }
+</script>
+<footer class="footer">
+    <div class="container" id="">
+        <div class="row">
+            <div class="footer-col">
+                <h4 style="text-align: left;">company</h4>
+                <ul>
+                    <li><a href="{% url 'aboutus' %}">about us</a></li>
+                    <li><a href="{% url 'privacy' %}">privacy policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4 style="text-align: left;">get help</h4>
+                <ul>
+                    <li>
+                        <a href="https://docs.google.com/forms/d/e/1FAIpQLSfGF14XUm0-lV9cmSUeQFvJHgeCUu462_4_Siz8KGUpjuOdkw/viewform"
+                           target="_blank">Customer care</a></li>
+                    <li>
+                        <a href="https://docs.google.com/forms/d/e/1FAIpQLSfGF14XUm0-lV9cmSUeQFvJHgeCUu462_4_Siz8KGUpjuOdkw/viewform"
+                           target="_blank">Report</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+
+            </div>
+            <div class="footer-col">
+                <h4 style="text-align: left;">follow us</h4>
+                <div class="social-links" style="display: flex;justify-content: space-evenly;">
+                    <a href="https://www.facebook.com/profile.php?id=100074285931176" target="_blank"><i
+                            class="fab fa-facebook-f"></i></a>
+                    <a href="https://twitter.com/ModernDictiona1" target="_blank"><i class="fab fa-twitter"></i></a>
+                    <a href="https://www.instagram.com/moderndictionary5/" target="_blank"><i
+                            class="fab fa-instagram"></i></a>
+                    <a href="https://www.linkedin.com/in/modern-dictionary-b713b1225/" target="_blank"><i
+                            class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <h6>Copyright &copy; 2021 moderndictionary.com</h6>
+    </div>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.sidenav').sidenav();
+    });
+</script>
+</body>
+
+</html>

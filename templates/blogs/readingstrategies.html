@@ -1,0 +1,798 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bitter:wght@376&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" type="image/ico" href="{% static 'images/logo.ico' %}"/>
+    <link rel="stylesheet" type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <title>Modern Dictionary</title>
+
+    <style>
+        body {
+            font-family: 'Bitter', serif;
+        }
+
+        #nav {
+            background-color: #066084;
+        }
+
+        a:hover {
+            color: black;
+        }
+
+        #games {
+            font-size: 21px;
+        }
+
+        #games:hover {
+            background-color: white;
+            color: #066084;
+            font-weight: bold;
+        }
+
+        p {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        ol {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        h1, h4 {
+            color: #0484c4;
+        }
+
+        .chat-bar-collapsible {
+            position: fixed;
+            bottom: 0;
+            right: 50px;
+
+            box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .collapsible {
+            background-color: #066084;
+            color: white;
+            cursor: pointer;
+            padding: 18px;
+            width: 250px;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            border-radius: 10px 10px 0px 0px;
+        {#border: 3px solid white;#}{#border-bottom: none;#}
+        }
+
+        .content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+            background-color: black;
+        }
+
+        .full-chat-block {
+            width: 350px;
+
+            background: white;
+            text-align: center;
+            overflow: auto;
+            scrollbar-width: none;
+            height: max-content;
+            transition: max-height 0.2s ease-out;
+        }
+
+        .outer-container {
+            min-height: 300px;
+            bottom: 0%;
+            width: 250px;
+            position: relative;
+            background-color: white;
+        }
+
+
+        .chat-container {
+            max-height: 300px;
+            width: 100%;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            scroll-behavior: smooth;
+            border-radius: 10px 10px 0px 0px;
+            hyphens: auto;
+        }
+
+        .chat-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .chat-bar-input-block {
+            display: flex;
+            float: left;
+            box-sizing: border-box;
+            justify-content: space-between;
+            width: 100%;
+            align-items: center;
+            background-color: rgb(235, 235, 235);
+            border-radius: 10px 10px 0px 0px;
+            padding: 10px 0px 10px 10px;
+        }
+
+        .chat-bar-icons {
+            display: flex;
+            justify-content: space-evenly;
+            box-sizing: border-box;
+            width: 25%;
+            float: right;
+            font-size: 20px;
+        }
+
+        #chat-icon:hover {
+            opacity: .7;
+        }
+
+        /* Chat bubbles */
+
+        #userInput {
+            width: 75%;
+        }
+
+        .input-box {
+            float: left;
+            border: none;
+            box-sizing: border-box;
+            width: 100%;
+            border-radius: 10px;
+            padding: 10px;
+            font-size: 16px;
+            color: #000;
+            background-color: white;
+            outline: none
+        }
+
+        .userText {
+            color: white;
+            font-family: Helvetica;
+            font-size: 16px;
+            font-weight: normal;
+            text-align: right;
+            clear: both;
+        }
+
+        .userText span {
+            line-height: 1.5em;
+            display: inline-block;
+            background: #066084;
+            padding: 10px;
+            border-radius: 8px;
+            border-bottom-right-radius: 2px;
+            max-width: 80%;
+            margin-right: 10px;
+            animation: floatup .5s forwards
+        }
+
+        .botText {
+            color: #000;
+            font-family: Helvetica;
+            font-weight: normal;
+            font-size: 16px;
+            text-align: left;
+            width: 280px;
+        }
+
+        .botText span {
+            line-height: 1.5em;
+            display: inline-block;
+            background: #e0e0e0;
+            padding: 10px;
+            border-radius: 8px;
+            border-bottom-left-radius: 2px;
+            max-width: 80%;
+            margin-left: 10px;
+            animation: floatup .5s forwards
+        }
+
+        @keyframes floatup {
+            from {
+                transform: translateY(14px);
+                opacity: .0;
+            }
+            to {
+                transform: translateY(0px);
+                opacity: 1;
+            }
+        }
+
+        @media screen and (max-width: 600px) {
+            .full-chat-block {
+                width: 100%;
+                border-radius: 0px;
+            }
+
+            .chat-bar-collapsible {
+                position: fixed;
+                bottom: 0px;
+                right: 0px;
+                width: 100%;
+            }
+
+            .collapsible {
+                width: 100%;
+                border: 0px;
+                border-top: 3px solid white;
+                border-radius: 0px;
+            }
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-family: Helvetica, sans-serif, Arial;
+        }
+
+        body {
+            margin: 0 auto;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            position: relative;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        footer {
+            background: rgb(0, 0, 0);
+            height: auto;
+            width: 100%;
+            padding-top: 40px;
+            color: #fff;
+        }
+
+        .footer-content h3 {
+            font-size: 1.9rem;
+            font-weight: 500;
+            text-transform: capitalize;
+            line-height: 8rem;
+            text-align: center;
+            position: relative;
+            top: -60px;
+            color: #ffffff;
+        }
+
+        .footer-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .footer-bottom {
+            background: rgb(12, 35, 61);
+            width: 100%;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        .footer-bottom p {
+            font-size: 20px;
+            word-spacing: 2px;
+            text-transform: capitalize;
+        }
+
+        .footer-bottom span {
+            text-transform: uppercase;
+            opacity: .4;
+            font-weight: 200;
+        }
+
+        .footer-col {
+            width: 25%;
+            padding: 0 15px;
+        }
+
+        .footer-col h4 {
+            font-size: 18px;
+            color: #ffffff;
+            text-transform: capitalize;
+            margin-bottom: 28px;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .footer-col h4::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -7px;
+            background-color: #e91e63;
+            height: 2px;
+            box-sizing: border-box;
+            width: 50px;
+        }
+
+        .footer-col ul li:not(:last-child) {
+            margin-bottom: 10px;
+        }
+
+        .footer-col ul li a {
+            font-size: 20px;
+            text-transform: capitalize;
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 300;
+            color: #bbbbbb;
+            display: block;
+            transition: all 0.3s ease;
+        }
+
+        .footer-col ul li a:hover {
+            color: #ffffff;
+            padding-left: 8px;
+        }
+
+        .footer-col .social-links a {
+            display: inline-block;
+            height: 40px;
+            width: 40px;
+            background-color: rgb(253, 10, 144);
+            margin: 0 8px 8px 0;
+            text-align: center;
+            line-height: 40px;
+            border-radius: 50%;
+            color: #ffffff;
+            transition: all 0.5s ease;
+        }
+
+        .footer-col .social-links a:hover {
+            color: #24262b;
+            background-color: #ffffff;
+        }
+
+        /*responsive*/
+        @media (max-width: 767px) {
+            .footer-col {
+                width: 50%;
+                margin-bottom: 30px;
+            }
+        }
+
+        @media (max-width: 574px) {
+            .footer-col {
+                width: 100%;
+            }
+        }
+        @media screen and (max-width: 1000px){
+            #logo,#menu{
+                font-size: 50px;
+            }
+            footer{
+                margin-top: 890px;
+            }
+            body{
+                height: 100px;
+            }
+
+            #games{
+                font-size: 40px;
+                padding: 40px;
+            }
+            p,li{
+                font-size: 40px;
+            }
+            body h4{
+                font-size: 45px;
+            }
+            .footer h4{
+                font-size: 30px;
+            }
+            .footer ul li a{
+                font-size: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+<nav id="nav">
+    <div class="nav-wrapper">
+        <div class="container">
+            <a href="/" class="brand-logo" id="logo">Modern Dictionary</a>
+            <a href="/" class="sidenav-trigger" data-target="mobile-nav">
+                <i class="material-icons" id="menu">menu</i>
+            </a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <li><a href="{% url 'blogs' %}" id="games">Back</a></li>
+                <li><a href="{% url 'download' %}" id="games">Download</a></li>
+                <li><a href="{% url 'games' %}" id="games">Games</a></li>
+                <li><a href="/" id="games">Home</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<ul class="sidenav" id="mobile-nav">
+    <li><a href="{% url 'blogs' %}" id="games">Back</a></li>
+    <li><a href="{% url 'download' %}" id="games">Download</a></li>
+    <li><a href="{% url 'games' %}" id="games">Games</a></li>
+    <li><a href="/" id="games">Home</a></li>
+</ul>
+<div id="google_translate_element"></div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<div class="container">
+    <h1 style="text-align: center;"><b>Reading Strategies & Tips</b></h1>
+    <hr size="13" width="100%" color="#066084" align="center">
+    <p>
+        Reading is a foundational learning activity for college-level courses. Assigned readings prepare you for taking
+        notes during lectures and provide you with additional examples and detail that might not be covered in class.
+        Also, according to research, readings are the second most frequent source of exam questions (Cuseo, Fecas &
+        Thompson, 2007).
+    </p>
+    <p>
+        Reading a college textbook effectively takes practice and should be approached differently than reading a novel,
+        comic book, magazine, or website. Becoming an effective reader goes beyond completing the reading in full or
+        highlighting text. There are a variety of strategies you can use to read effectively and retain the information
+        you read.
+    </p>
+    <p>
+        Consider the following quick tips and ideas to make the most of your reading time:
+    </p>
+    <ol>
+        <li>Schedule time to read</li>
+        <hr>
+        <p>Reading is an easy thing to put off because there is often no exact due date. By scheduling a time each week
+            to do your reading for each class, you are more likely to complete the reading as if it were an assignment.
+            Producing a study guide or set of notes from the reading can help to direct your thinking as you read.</p>
+        <li>Set yourself up for success.</li>
+        <hr>
+        <p>Pick a location that is conducive to reading. Establish a reasonable goal for the reading, and a time limit
+            for how long you’ll be working. These techniques make reading feel manageable and make it easier to get
+            started and finish reading.</p>
+        <li>Choose and use a specific reading strategy.</li>
+        <hr>
+        <p>There are many strategies that will help you actively read and retain information (PRR or SQ3R – see the
+            handouts and videos). By consciously choosing a way to approach your reading, you can begin the first step
+            of exam preparation or essay writing. Remember: good readers make stronger writers.</p>
+        <li>Monitor your comprehension</li>
+        <hr>
+        <p>When you finish a section, ask yourself, "What is the main idea in this section? Could I answer an exam
+            question about this topic?" Questions at the end of chapters are particularly good for focusing your
+            attention and for assessing your comprehension. If you are having difficulty recalling information or
+            answering questions about the text, search back through the text and look for key points and answers.
+            Self-correction techniques like revisiting the text are essential to assessing your comprehension and are a
+            hallmark technique of advanced readers (Caverly & Orlando, 1991).</p>
+        <li>Take notes as you read.</li>
+        <hr>
+        <p>Whether they’re annotations in the margins of the book, or notes on a separate piece of paper. Engage with
+            the reading through your notes – ask questions, answer questions, make connections, and think about how
+            these ideas integrate with other information sources (like lecture, lab, other readings, etc.)</p>
+    </ol>
+    <p>Want to dive in a little deeper? Take a look at Kathleen King's tips below to help you get the most out of your
+        reading, and to read for success. You'll see that some are similar to the tips above, but some offer new
+        approaches and ideas; see what works for you:</p>
+    <ol>
+        <li>Read sitting up with good light, and at a desk or table.</li>
+        <li>Keep background noise to a minimum. Loud rock music will not make you a better reader. The same goes for
+            other distractions: talking to roommates, kids playing nearby, television or radio. Give yourself a quiet
+            environment so that you can concentrate on the text.
+        </li>
+        <li>Keep paper and pen within reach.</li>
+        <li>Before beginning to read, think about the purpose of the reading. Why has the teacher assigned the reading?
+            What are you supposed to get out of it? Jot down your thoughts.
+        </li>
+        <li>Survey the reading. Look at the title of the piece, the subheadings. What is in the dark print or stands
+            out? Are there illustrations or graphs?
+        </li>
+        <li>Strategize your approach: read the introduction and conclusion, then go back and read the whole assignment,
+            or read the first line in every paragraph to get an idea of how the ideas progress, then go back and read
+            from the beginning.
+        </li>
+        <li>Scan effectively: scan the entire reading, and then focus on the most interesting or relevant parts to read
+            in detail.
+        </li>
+        <li>Get a feel for what's expected of you by the reading. Pay attention to when you can skim and when you need
+            to understand every word.
+        </li>
+        <li>Write as you read. Take notes and talk back to the text. Explain in detail the concepts. Mark up the pages.
+            Ask questions. Write possible test questions. Write down what interests or bores you. Speculate about why.
+        </li>
+        <li>If you get stuck: think and write about where you got stuck. Contemplate why that particular place was
+            difficult and how you might break through the block.
+        </li>
+        <li>Record and explore your confusion. Confusion is important because it’s the first stage in understanding.
+        </li>
+        <li>When the going gets difficult, and you don’t understand the reading, slow down and reread sections. Try to
+            explain them to someone, or have someone else read the section and talk through it together.
+        </li>
+        <li>Break long assignments into segments. Read 10 pages (and take notes) then do something else. Later, read the
+            next 10 pages and so on.
+        </li>
+        <li>Read prefaces and summaries to learn important details about the book. Look at the table of contents for
+            information about the structure and movement of ideas. Use the index to look up specific names, places,
+            ideas
+        </li>
+    </ol>
+</div>
+
+
+<!-- Compiled and minified CSS -->
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+<!-- Compiled and minified JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script type="text/javascript">
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+            pageLanguage: 'en', // set default for your need
+            includedLanguages: 'bg,bs,de,en,es,fr,hr,hu,it,ja,ko,mk,nl,ro,ru,sl,sq,sr,zh-CN,mr', // include other languages per need
+            layout: google.translate.TranslateElement.InlineLayout.SIMPLE, // style or type of the box
+            gaTrack: true, // otherwise false if not using GA
+            gaId: 'UA-XXXXXXX-X' // your Google Analytics tracking ID, not needed if not using GA
+        }, 'google_translate_element');
+    }
+</script>
+<script type="text/javascript"
+        src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<footer class="footer">
+    <div class="container" id="">
+        <div class="row">
+            <div class="footer-col">
+                <h4>company</h4>
+                <ul>
+                    <li><a href="{% url 'aboutus' %}">about us</a></li>
+                    <li><a href="{% url 'privacy' %}">privacy policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>get help</h4>
+                <ul>
+                    <li>
+                        <a href="https://docs.google.com/forms/d/e/1FAIpQLSfGF14XUm0-lV9cmSUeQFvJHgeCUu462_4_Siz8KGUpjuOdkw/viewform"
+                           target="_blank">Customer care</a></li>
+                    <li>
+                        <a href="https://docs.google.com/forms/d/e/1FAIpQLSfGF14XUm0-lV9cmSUeQFvJHgeCUu462_4_Siz8KGUpjuOdkw/viewform"
+                           target="_blank">Report</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+
+            </div>
+            <div class="footer-col">
+                <h4>follow us</h4>
+                <div class="social-links" style="display: flex;justify-content: space-evenly;">
+                    <a href="https://www.facebook.com/profile.php?id=100074285931176" target="_blank"><i
+                            class="fab fa-facebook-f"></i></a>
+                    <a href="https://twitter.com/ModernDictiona1" target="_blank"><i class="fab fa-twitter"></i></a>
+                    <a href="https://www.instagram.com/moderndictionary5/" target="_blank"><i
+                            class="fab fa-instagram"></i></a>
+                    <a href="https://www.linkedin.com/in/modern-dictionary-b713b1225/" target="_blank"><i
+                            class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <h6>Copyright &copy; 2021 moderndictionary.com</h6>
+    </div>
+</footer>
+<!-- CHAT BAR BLOCK -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<div class="chat-bar-collapsible" style="width: 250px;border-radius: 80px 80px 0px 0px;margin-top: 50px;">
+    <button id="chat-button" type="button" class="collapsible" style="background-color: #066084;">Chat with Us!
+        {#        <i id="chat-icon" style="color: #fff;" class="fa fa-fw fa-comments-o"></i>#}
+    </button>
+
+    <div class="content">
+        <div class="full-chat-block">
+            <!-- Message Container -->
+            <div class="outer-container">
+                <div class="chat-container">
+                    <!-- Messages -->
+                    <div id="chatbox">
+                        <h5 id="chat-timestamp"></h5>
+                        <p id="botStarterMessage" class="botText"><span>Loading...</span></p>
+                    </div>
+
+                    <!-- User input box -->
+                    <div class="chat-bar-input-block">
+                        <div id="userInput">
+                            <input id="textInput" class="input-box" type="text" name="msg"
+                                   placeholder="Tap 'Enter' to send a message">
+                            <p></p>
+                        </div>
+
+                        <div class="chat-bar-icons">
+                            <i id="chat-icon" style="color: crimson;" class="fa fa-fw fa-heart"
+                               onclick="heartButton()"></i>
+                            <i id="chat-icon" style="color: #333;" class="fa fa-fw fa-send"
+                               onclick="sendButton()"></i>
+                        </div>
+                    </div>
+
+                    <div id="chat-bar-bottom">
+                        <p></p>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+<script>
+    // Collapsible
+    var coll = document.getElementsByClassName("collapsible");
+
+    for (let i = 0; i < coll.length; i++) {
+        coll[i].addEventListener("click", function () {
+            this.classList.toggle("active");
+
+            var content = this.nextElementSibling;
+
+            if (content.style.maxHeight) {
+                content.style.maxHeight = null;
+            } else {
+                content.style.maxHeight = content.scrollHeight + "px";
+            }
+
+        });
+    }
+
+    function getTime() {
+        let today = new Date();
+        hours = today.getHours();
+        minutes = today.getMinutes();
+
+        if (hours < 10) {
+            hours = "0" + hours;
+        }
+
+        if (minutes < 10) {
+            minutes = "0" + minutes;
+        }
+
+        let time = hours + ":" + minutes;
+        return time;
+    }
+
+    // Gets the first message
+    function firstBotMessage() {
+        let firstMessage = "How's it going?"
+        document.getElementById("botStarterMessage").innerHTML = '<p class="botText"><span>' + firstMessage + '</span></p>';
+
+        let time = getTime();
+
+        $("#chat-timestamp").append(time);
+        document.getElementById("userInput").scrollIntoView(false);
+    }
+
+    firstBotMessage();
+
+    // Retrieves the response
+    function getHardResponse(userText) {
+        let botResponse = getBotResponse(userText);
+        let botHtml = '<p class="botText"><span>' + botResponse + '</span></p>';
+        $("#chatbox").append(botHtml);
+
+        document.getElementById("chat-bar-bottom").scrollIntoView(true);
+    }
+
+    //Gets the text text from the input box and processes it
+    function getResponse() {
+        let userText = $("#textInput").val();
+
+        if (userText == "") {
+            userText = "I love Code Palace!";
+        }
+
+        let userHtml = '<p class="userText"><span>' + userText + '</span></p>';
+
+        $("#textInput").val("");
+        $("#chatbox").append(userHtml);
+        document.getElementById("chat-bar-bottom").scrollIntoView(true);
+
+        setTimeout(() => {
+            getHardResponse(userText);
+        }, 1000)
+
+    }
+
+    // Handles sending text via button clicks
+    function buttonSendText(sampleText) {
+        let userHtml = '<p class="userText"><span>' + sampleText + '</span></p>';
+
+        $("#textInput").val("");
+        $("#chatbox").append(userHtml);
+        document.getElementById("chat-bar-bottom").scrollIntoView(true);
+
+        //Uncomment this if you want the bot to respond to this buttonSendText event
+        // setTimeout(() => {
+        //     getHardResponse(sampleText);
+        // }, 1000)
+    }
+
+    function sendButton() {
+        getResponse();
+    }
+
+    function heartButton() {
+        buttonSendText("Heart clicked!")
+    }
+
+    // Press enter to send a message
+    $("#textInput").keypress(function (e) {
+        if (e.which == 13) {
+            getResponse();
+        }
+    });
+
+    function getBotResponse(input) {
+        var input = input.toLowerCase();
+        //rock paper scissors
+        if (input == "rock") {
+            return "paper";
+        } else if (input == "paper") {
+            return "scissors";
+        } else if (input == "scissors") {
+            return "rock";
+        }
+
+        // Simple responses
+        if (input == "hello" || input == "hi") {
+            return "Hello there!";
+        } else if (input == "goodbye" || input == "bye") {
+            return "Talk to you later!";
+        } else if (input == "help" || input == "contact me") {
+            window.open("https://forms.gle/EUFqN7ytCjpfXNPY8", '_blank').focus();
+            return "Check Your Browser Tabs";
+        } else if (input == "games" || input == "bored") {
+            window.open("{% url 'games' %}", "_self");
+            return "Enjoy your Play!"
+        } else if (input == "blogs" || input == "read") {
+            window.open("{% url 'blogs' %}", "_self");
+            return "Read your favourite blogs!";
+        } else if (input == "phone number" || input == "emailid" || input == "contact you") {
+
+            return "Email id :- aaryanrlondhe99@gmail.com Phone Number: +91 7045854423";
+
+        } else if (input == "download" || input == "ebooks" || input == "dictionary") {
+            window.open("{% url 'download' %}", "_self");
+            return "Check Your Browser Tabs";
+        } else if (input == "about us" || input == "aboutus" || input == "about") {
+            window.open("{% url 'aboutus' %}", "_self");
+            return "Check Your Browser Tabs";
+        } else if (input == "privacy" || input == "cookies" || input == "data") {
+            window.open("{% url 'privacy' %}", "_self");
+            return "Check Your Browser Tabs";
+        } else if (input == "download" || input == "ebooks" || input == "dictionary") {
+            window.open("{% url 'download' %}", "_self");
+            return "Check Your Browser Tabs";
+        } else {
+            return "Try asking something else!";
+        }
+    }
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.sidenav').sidenav();
+    });
+</script>
+</body>
+</html>

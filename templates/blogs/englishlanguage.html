@@ -1,0 +1,840 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bitter:wght@376&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" type="image/ico" href="{% static 'images/logo.ico' %}"/>
+    <link rel="stylesheet" type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <title>Modern Dictionary</title>
+
+    <style>
+        body {
+            font-family: 'Bitter', serif;
+        }
+
+        #nav {
+            background-color: #066084;
+        }
+
+        a:hover {
+            color: black;
+        }
+
+        #games {
+            font-size: 21px;
+        }
+        #games:hover{
+            background-color: white;
+            color: #066084;
+            font-weight: bold;
+        }
+        p {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        ol {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        h1, h4 {
+            color: #0484c4;
+        }
+
+        .chat-bar-collapsible {
+            position: fixed;
+            bottom: 0;
+            right: 50px;
+
+            box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .collapsible {
+            background-color: #066084;
+            color: white;
+            cursor: pointer;
+            padding: 18px;
+            width: 250px;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            border-radius: 10px 10px 0px 0px;
+        {#border: 3px solid white;#}{#border-bottom: none;#}
+        }
+
+        .content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+            background-color: black;
+        }
+
+        .full-chat-block {
+            width: 350px;
+
+            background: white;
+            text-align: center;
+            overflow: auto;
+            scrollbar-width: none;
+            height: max-content;
+            transition: max-height 0.2s ease-out;
+        }
+
+        .outer-container {
+            min-height: 300px;
+            bottom: 0%;
+            width: 250px;
+            position: relative;
+            background-color: white;
+        }
+
+
+        .chat-container {
+            max-height: 300px;
+            width: 100%;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            scroll-behavior: smooth;
+            border-radius: 10px 10px 0px 0px;
+            hyphens: auto;
+        }
+
+        .chat-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .chat-bar-input-block {
+            display: flex;
+            float: left;
+            box-sizing: border-box;
+            justify-content: space-between;
+            width: 100%;
+            align-items: center;
+            background-color: rgb(235, 235, 235);
+            border-radius: 10px 10px 0px 0px;
+            padding: 10px 0px 10px 10px;
+        }
+
+        .chat-bar-icons {
+            display: flex;
+            justify-content: space-evenly;
+            box-sizing: border-box;
+            width: 25%;
+            float: right;
+            font-size: 20px;
+        }
+
+        #chat-icon:hover {
+            opacity: .7;
+        }
+
+        /* Chat bubbles */
+
+        #userInput {
+            width: 75%;
+        }
+
+        .input-box {
+            float: left;
+            border: none;
+            box-sizing: border-box;
+            width: 100%;
+            border-radius: 10px;
+            padding: 10px;
+            font-size: 16px;
+            color: #000;
+            background-color: white;
+            outline: none
+        }
+
+        .userText {
+            color: white;
+            font-family: Helvetica;
+            font-size: 16px;
+            font-weight: normal;
+            text-align: right;
+            clear: both;
+        }
+
+        .userText span {
+            line-height: 1.5em;
+            display: inline-block;
+            background: #066084;
+            padding: 10px;
+            border-radius: 8px;
+            border-bottom-right-radius: 2px;
+            max-width: 80%;
+            margin-right: 10px;
+            animation: floatup .5s forwards
+        }
+
+        .botText {
+            color: #000;
+            font-family: Helvetica;
+            font-weight: normal;
+            font-size: 16px;
+            text-align: left;
+            width: 280px;
+        }
+
+        .botText span {
+            line-height: 1.5em;
+            display: inline-block;
+            background: #e0e0e0;
+            padding: 10px;
+            border-radius: 8px;
+            border-bottom-left-radius: 2px;
+            max-width: 80%;
+            margin-left: 10px;
+            animation: floatup .5s forwards
+        }
+
+        @keyframes floatup {
+            from {
+                transform: translateY(14px);
+                opacity: .0;
+            }
+            to {
+                transform: translateY(0px);
+                opacity: 1;
+            }
+        }
+
+        @media screen and (max-width: 600px) {
+            .full-chat-block {
+                width: 100%;
+                border-radius: 0px;
+            }
+
+            .chat-bar-collapsible {
+                position: fixed;
+                bottom: 0px;
+                right: 0px;
+                width: 100%;
+            }
+
+            .collapsible {
+                width: 100%;
+                border: 0px;
+                border-top: 3px solid white;
+                border-radius: 0px;
+            }
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-family: Helvetica, sans-serif, Arial;
+        }
+
+        body {
+            margin: 0 auto;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            position: relative;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        footer {
+            background: rgb(0, 0, 0);
+            height: auto;
+            width: 100%;
+            padding-top: 40px;
+            color: #fff;
+        }
+
+        .footer-content h3 {
+            font-size: 1.9rem;
+            font-weight: 500;
+            text-transform: capitalize;
+            line-height: 8rem;
+            text-align: center;
+            position: relative;
+            top: -60px;
+            color: #ffffff;
+        }
+
+        .footer-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .footer-bottom {
+            background: rgb(12, 35, 61);
+            width: 100%;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        .footer-bottom p {
+            font-size: 20px;
+            word-spacing: 2px;
+            text-transform: capitalize;
+        }
+
+        .footer-bottom span {
+            text-transform: uppercase;
+            opacity: .4;
+            font-weight: 200;
+        }
+
+        .footer-col {
+            width: 25%;
+            padding: 0 15px;
+        }
+
+        .footer-col h4 {
+            font-size: 18px;
+            color: #ffffff;
+            text-transform: capitalize;
+            margin-bottom: 28px;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .footer-col h4::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -7px;
+            background-color: #e91e63;
+            height: 2px;
+            box-sizing: border-box;
+            width: 50px;
+        }
+
+        .footer-col ul li:not(:last-child) {
+            margin-bottom: 10px;
+        }
+
+        .footer-col ul li a {
+            font-size: 20px;
+            text-transform: capitalize;
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 300;
+            color: #bbbbbb;
+            display: block;
+            transition: all 0.3s ease;
+        }
+
+        .footer-col ul li a:hover {
+            color: #ffffff;
+            padding-left: 8px;
+        }
+
+        .footer-col .social-links a {
+            display: inline-block;
+            height: 40px;
+            width: 40px;
+            background-color: rgb(253, 10, 144);
+            margin: 0 8px 8px 0;
+            text-align: center;
+            line-height: 40px;
+            border-radius: 50%;
+            color: #ffffff;
+            transition: all 0.5s ease;
+        }
+
+        .footer-col .social-links a:hover {
+            color: #24262b;
+            background-color: #ffffff;
+        }
+
+        /*responsive*/
+        @media (max-width: 767px) {
+            .footer-col {
+                width: 50%;
+                margin-bottom: 30px;
+            }
+        }
+
+        @media (max-width: 574px) {
+            .footer-col {
+                width: 100%;
+            }
+        }
+        @media screen and (max-width: 1000px) {
+            #logo,#menu{
+                font-size: 50px;
+            }
+            footer {
+                margin-top: 890px;
+            }
+
+            body {
+                height: 100px;
+            }
+            p,li{
+                font-size: 40px;
+            }
+            #games {
+                font-size: 40px;
+                padding: 40px;
+            }
+            .footer h4{
+                font-size: 30px;
+            }
+            .footer ul li a{
+                font-size: 25px;
+            }
+            body h4{
+                font-size: 45px;
+            }
+        }
+    </style>
+</head>
+<body>
+<nav id="nav">
+    <div class="nav-wrapper">
+        <div class="container">
+            <a href="/" class="brand-logo" id="logo">Modern Dictionary</a>
+            <a class="sidenav-trigger" data-target="mobile-nav">
+                <i class="material-icons" id="menu">menu</i>
+            </a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <li><a href="{% url 'blogs' %}" id="games">Back</a></li>
+                <li><a href="{% url 'download' %}" id="games">Download</a></li>
+                <li><a href="{% url 'games' %}" id="games">Games</a></li>
+                <li><a href="/" id="games">Home</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<ul class="sidenav" id="mobile-nav">
+    <li><a href="{% url 'blogs' %}" id="games">Back</a></li>
+    <li><a href="{% url 'download' %}" id="games">Download</a></li>
+    <li><a href="{% url 'games' %}" id="games">Games</a></li>
+    <li><a href="/" id="games">Home</a></li>
+</ul>
+<div id="google_translate_element"></div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<div class="container">
+    <h1 style="text-align: center;"><b>History of English Language and its types</b></h1>
+    <hr size="13" width="100%" color="#066084" align="center">
+    <p>
+        English is a West Germanic language that originated from Anglo-Frisian dialects brought to Britain in the mid 5th to 7th centuries AD by Anglo-Saxon migrants from what is now northwest Germany,
+        southern Denmark and the Netherlands. The Anglo-Saxons settled in the British Isles from the mid-5th century and came to dominate the bulk of southern Great Britain. Their language, now called Old English,
+        originated as a group of Anglo-Frisian dialects which were spoken, at least by the settlers, in England and southern and eastern Scotland in the early Middle Ages, displacing the Celtic languages (and, possibly, British Latin) that
+        had previously been dominant. Old English reflected the varied origins of the Anglo-Saxon kingdoms established in different parts of Britain. The Late West Saxon dialect eventually became dominant.
+        A significant subsequent influence on the shaping of Old English came from contact with the North Germanic languages spoken by the Scandinavian Vikings who conquered and colonized parts of Britain during the 8th and 9th centuries,
+        which led to much lexical borrowing and grammatical simplification. The Anglian dialects had a greater influence on Middle English.
+
+
+    </p>
+
+    <p>
+        After the Norman conquest in 1066, Old English was replaced, for a time, by Anglo-Norman as the language of the upper classes. This is regarded as marking the end of the Old English or Anglo-Saxon era, as during this period the English language was heavily influenced by Anglo-Norman,
+        developing into a phase known now as Middle English. The conquering Normans spoke a Romance langue d'oïl called Old Norman, which in Britain developed into Anglo-Norman. Many Norman and French loanwords entered the local language in this period,
+        especially in vocabulary related to the church, the court system and the government. As Normans are descendants of Vikings who invaded France, Norman French was influenced by Old Norse, and many Norse loanwords in English came directly from French.
+        Middle English was spoken to the late 15th century.
+        The system of orthography that was established during the Middle English period is largely still in use today.
+        Later changes in pronunciation, however, combined with the adoption of various foreign spellings,
+        mean that the spelling of modern English words appears highly irregular.
+
+
+    </p>
+
+    <p>
+        Early Modern English – the language used by William Shakespeare – is dated from around 1500.
+        It incorporated many Renaissance-era loans from Latin and Ancient Greek, as well as borrowings from other European languages, including French, German and Dutch.
+        Significant pronunciation changes in this period included the ongoing Great Vowel Shift, which affected the qualities of most long vowels.
+        Modern English proper, similar in most respects to that spoken today, was in place by the late 17th century.
+
+    </p>
+
+    <p>
+        English as we know it today came to be exported to other parts of the world through British colonisation,
+        and is now the dominant language in Britain and Ireland, the United States and Canada, Australia,
+        New Zealand and many smaller former colonies, as well as being widely spoken in India, parts of Africa, and
+        elsewhere. Partially due to influence of the United States and its globalized efforts of commerce and technology,
+        English took on the status of a global lingua franca in the second half of the 20th century. This is especially true in Europe,
+        where English has largely taken over the former roles of French and (much earlier) Latin as a common language used to conduct business and diplomacy,
+        share scientific and technological information, and otherwise communicate across national boundaries. The efforts of English-speaking
+        Christian missionaries have resulted in English becoming a second language for many other groups.
+    </p>
+
+    <p>
+        Global variation among different English dialects and accents remains significant today. Scots,
+        a form of English traditionally spoken in parts of Scotland and the north of Ireland,
+        is sometimes treated as a separate language.
+    </p>
+
+    <h4>
+        <b>
+            Modern English
+        </b>
+    </h4>
+    <hr>
+    <p>
+        The first authoritative and full-featured English dictionary, the Dictionary of the English Language,
+        was published by Samuel Johnson in 1755. To a high degree, the dictionary standardized both English spelling and word usage.
+        Meanwhile, grammar texts by Lowth, Murray, Priestly, and others attempted to prescribe standard usage even further.
+    </p>
+    <p>
+        Early Modern English and Late Modern English, also called Present-Day English (PDE), differ essentially in vocabulary.
+        Late Modern English has many more words, arising from the Industrial Revolution and technologies that created a need for new words, as well as international development of the language.
+        The British Empire at its height covered one quarter of the Earth's land surface, and the English language adopted foreign words from many countries. British English and North American English,
+        the two major varieties of the language, are together spoken by 400 million people. The total number of English speakers worldwide may exceed one billion. The English language will almost certainly continue to evolve over time.
+        With the development of computer and online environments (such as chat rooms, social media expressions, and apps), and the adoption of English as a worldwide lingua franca across cultures, customs, and traditions,
+        it should not be surprising to see further shortening of words, phrases, and/or sentences.
+    </p>
+    <h4><b> Types of English Language   </b></h4>
+    <hr>
+    <p>
+        English is the most widely-spoken language in the world, having the distinct status of being the official language of multiple countries. While the English language is uniform with major variations in spelling present between American English and British English,
+        the dialect or accent is usually the factor that enables one to distinguish the various types of English out there. Like most languages, there are varieties of English too, however,
+        the difference is not as prominent as you may see in other languages.
+       From the thick Ugandan English to the French-themed Canadian English, the varieties of accents present are both diverse and beautiful. Apart from accents,
+        there is a tendency for people to mix English with their local lingo to form a hybrid variety of English language that is as colorful as the culture in that country.
+       Read on to find out more about the various types of English language that are present in countries around the world.
+
+    </p>
+    <h4><b> 1.BRITISH ENGLISH</b></h4>
+    <hr>
+    <p>
+     British English is the English language as spoken and written in the United Kingdom or, more broadly,
+        throughout the British Isles. Slight regional variations exist in formal, written English in the United Kingdom.
+      English is a West Germanic language that originated from the Anglo-Frisian dialects brought to Britain by Germanic settlers from various parts of what is now northwest Germany and the northern Netherlands.
+        The resident population at this time was generally speaking Common Brittonic—the insular variety of continental Celtic, which was influenced by the Roman occupation.
+        This group of languages (Welsh, Cornish, Cumbric) cohabited alongside English into the modern period, but due to their remoteness from the Germanic languages, influence on English was notably limited.
+    </p>
+
+    <h4><b> 2.AMERICAN ENGLISH </b></h4>
+    <hr>
+    <p>
+        American English sometimes called United States English or U.S. English, is the set of varieties of the English language native to the United States and widely adopted in Canada.
+        English is the most widely spoken language in the United States and is the common language used by the federal government, considered the de facto language of the country because of its widespread use.
+        English has been given official status by 32 of the 50 state governments.
+    </p>
+
+    <h4><b> 3.AUSTRALIAN ENGLISH </b></h4>
+    <hr>
+    <p>
+        Australian English is a major variety of the English language, used throughout Australia.
+        Although English has no official status in the constitution, Australian English is the country’s national and de facto official language as it is the first language of the majority of the population.
+Australian English began to diverge from British English after the founding of the Colony of New South Wales in 1788 and was recognized as being different from British English by 1820. It arose from the intermingling of early settlers from a great variety of mutually intelligible dialectal regions of the British Isles and quickly developed into a distinct variety of English.
+
+    </p>
+    <h4><b> 4.CANADIAN ENGLISH </b></h4>
+    <hr>
+    <p>
+        Canadian English is the set of varieties of English native to Canada. According to the 2011 census, English was the first language of approximately 19 million Canadians (57% of the population) the remainder of the population were native speakers of Canadian French (22%) or other languages (allophones, 21%).
+       The term “Canadian English” is first attested in a speech by the Reverend A. Constable Geikie in an address to the Canadian Institute in 1857. Canadian English is the product of five waves of immigration and settlement over a period of more than two centuries. The first large wave of permanent English-speaking settlement in Canada,
+        and linguistically the most important, was the influx of loyalists fleeing the American Revolution, chiefly from the Mid-Atlantic States – as such, New York, New Jersey, Pennsylvania, Delaware, Maryland, Washington, D.C., Virginia, and West Virginia. Canadian English is believed by some scholars to have derived from northern American English.
+    </p>
+    <h4><b> 5.INDIAN ENGLISH </b></h4>
+    <hr>
+    <p>
+       English public instruction began in India in the 1830s during the rule of the East India Company (India was then, and is today, one of the most linguistically diverse regions of the world). In 1835,
+        English replaced Persian as the official language of the Company. Lord Macaulay played a major role in introducing English and western concepts to education in India. He supported the replacement of Persian by English as the official language,
+        the use of English as the medium of instruction in all schools, and the training of English-speaking Indians as teachers.
+      The view of this language among many Indians has gone from associating it with colonialism to associating it with economic progress,
+        and English continues to be an official language of India, albeit with an Indian twist, popularly known as Indian English
+    </p>
+    <h4><b> 6.PHILIPPINE ENGLISH </b></h4>
+    <hr>
+    <p>
+        Philippine English is any variety of English (similar and related to American English) native to the Philippines, including those used by the media and the vast majority of educated Filipinos. English is taught in schools as one of the two official languages of the country,
+        the other being Filipino (Tagalog).
+        Philippine English has evolved tremendously from where it began decades ago. Some decades before English was officially introduced, if not arguably forced, to the Philippines,
+        the archipelagic nation has been subject to Spanish rule and thus Spanish was the language of power and influence. However, in 1898, when the Spanish gave the United States control of the nation,
+    </p>
+    <h4><b> 7.UGANDAN ENGLISH  </b></h4>
+    <hr>
+    <p>
+        Ugandan English, or Uglish (pronounced you-glish), is the dialect of English spoken in Uganda.
+        As with similar dialects spoken elsewhere, Ugandan English has developed a strong local flavor.
+        The speech patterns of Ugandan languages strongly influence spoken English. Uganda has a large variety of indigenous languages, and someone familiar with Uganda can readily identify the native language of a person speaking English.
+        Ugandan speakers will alter foreign words to make them sound more euphonic.
+        The English language is an amalgamation of cultures, intricacies, and experiences.
+        A lot of the common words used have strange origins
+    </p>
+</div>
+
+
+<!-- Compiled and minified CSS -->
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+<!-- Compiled and minified JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script type="text/javascript">
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+            pageLanguage: 'en', // set default for your need
+            includedLanguages: 'bg,bs,de,en,es,fr,hr,hu,it,ja,ko,mk,nl,ro,ru,sl,sq,sr,zh-CN,mr', // include other languages per need
+            layout: google.translate.TranslateElement.InlineLayout.SIMPLE, // style or type of the box
+            gaTrack: true, // otherwise false if not using GA
+            gaId: 'UA-XXXXXXX-X' // your Google Analytics tracking ID, not needed if not using GA
+        }, 'google_translate_element');
+    }
+</script>
+<script type="text/javascript"
+        src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<footer class="footer">
+    <div class="container" id="">
+        <div class="row">
+            <div class="footer-col">
+                <h4>company</h4>
+                <ul>
+                    <li><a href="{% url 'aboutus' %}">about us</a></li>
+                    <li><a href="{% url 'privacy' %}">privacy policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>get help</h4>
+                <ul>
+                    <li><a href="https://docs.google.com/forms/d/e/1FAIpQLSfGF14XUm0-lV9cmSUeQFvJHgeCUu462_4_Siz8KGUpjuOdkw/viewform" target="_blank">Customer care</a></li>
+                    <li><a href="https://docs.google.com/forms/d/e/1FAIpQLSfGF14XUm0-lV9cmSUeQFvJHgeCUu462_4_Siz8KGUpjuOdkw/viewform" target="_blank">Report</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+
+            </div>
+            <div class="footer-col">
+                <h4>follow us</h4>
+                <div class="social-links" style="display: flex;justify-content: space-evenly;">
+                    <a href="https://www.facebook.com/profile.php?id=100074285931176" target="_blank"><i
+                            class="fab fa-facebook-f"></i></a>
+                    <a href="https://twitter.com/ModernDictiona1" target="_blank"><i class="fab fa-twitter"></i></a>
+                    <a href="https://www.instagram.com/moderndictionary5/" target="_blank"><i
+                            class="fab fa-instagram"></i></a>
+                    <a href="https://www.linkedin.com/in/modern-dictionary-b713b1225/" target="_blank"><i
+                            class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <h6>Copyright &copy; 2021 moderndictionary.com</h6>
+    </div>
+</footer>
+<!-- CHAT BAR BLOCK -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<div class="chat-bar-collapsible" style="width: 250px;border-radius: 80px 80px 0px 0px;margin-top: 50px;">
+    <button id="chat-button" type="button" class="collapsible" style="background-color: #066084;">Chat with Us!
+{#        <i id="chat-icon" style="color: #fff;" class="fa fa-fw fa-comments-o"></i>#}
+    </button>
+
+    <div class="content">
+        <div class="full-chat-block">
+            <!-- Message Container -->
+            <div class="outer-container">
+                <div class="chat-container">
+                    <!-- Messages -->
+                    <div id="chatbox">
+                        <h5 id="chat-timestamp"></h5>
+                        <p id="botStarterMessage" class="botText"><span>Loading...</span></p>
+                    </div>
+
+                    <!-- User input box -->
+                    <div class="chat-bar-input-block">
+                        <div id="userInput">
+                            <input id="textInput" class="input-box" type="text" name="msg"
+                                   placeholder="Tap 'Enter' to send a message">
+                            <p></p>
+                        </div>
+
+                        <div class="chat-bar-icons">
+                            <i id="chat-icon" style="color: crimson;" class="fa fa-fw fa-heart"
+                               onclick="heartButton()"></i>
+                            <i id="chat-icon" style="color: #333;" class="fa fa-fw fa-send"
+                               onclick="sendButton()"></i>
+                        </div>
+                    </div>
+
+                    <div id="chat-bar-bottom">
+                        <p></p>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+<script>
+    // Collapsible
+    var coll = document.getElementsByClassName("collapsible");
+
+    for (let i = 0; i < coll.length; i++) {
+        coll[i].addEventListener("click", function () {
+            this.classList.toggle("active");
+
+            var content = this.nextElementSibling;
+
+            if (content.style.maxHeight) {
+                content.style.maxHeight = null;
+            } else {
+                content.style.maxHeight = content.scrollHeight + "px";
+            }
+
+        });
+    }
+
+    function getTime() {
+        let today = new Date();
+        hours = today.getHours();
+        minutes = today.getMinutes();
+
+        if (hours < 10) {
+            hours = "0" + hours;
+        }
+
+        if (minutes < 10) {
+            minutes = "0" + minutes;
+        }
+
+        let time = hours + ":" + minutes;
+        return time;
+    }
+
+    // Gets the first message
+    function firstBotMessage() {
+        let firstMessage = "How's it going?"
+        document.getElementById("botStarterMessage").innerHTML = '<p class="botText"><span>' + firstMessage + '</span></p>';
+
+        let time = getTime();
+
+        $("#chat-timestamp").append(time);
+        document.getElementById("userInput").scrollIntoView(false);
+    }
+
+    firstBotMessage();
+
+    // Retrieves the response
+    function getHardResponse(userText) {
+        let botResponse = getBotResponse(userText);
+        let botHtml = '<p class="botText"><span>' + botResponse + '</span></p>';
+        $("#chatbox").append(botHtml);
+
+        document.getElementById("chat-bar-bottom").scrollIntoView(true);
+    }
+
+    //Gets the text text from the input box and processes it
+    function getResponse() {
+        let userText = $("#textInput").val();
+
+        if (userText == "") {
+            userText = "I love Code Palace!";
+        }
+
+        let userHtml = '<p class="userText"><span>' + userText + '</span></p>';
+
+        $("#textInput").val("");
+        $("#chatbox").append(userHtml);
+        document.getElementById("chat-bar-bottom").scrollIntoView(true);
+
+        setTimeout(() => {
+            getHardResponse(userText);
+        }, 1000)
+
+    }
+
+    // Handles sending text via button clicks
+    function buttonSendText(sampleText) {
+        let userHtml = '<p class="userText"><span>' + sampleText + '</span></p>';
+
+        $("#textInput").val("");
+        $("#chatbox").append(userHtml);
+        document.getElementById("chat-bar-bottom").scrollIntoView(true);
+
+        //Uncomment this if you want the bot to respond to this buttonSendText event
+        // setTimeout(() => {
+        //     getHardResponse(sampleText);
+        // }, 1000)
+    }
+
+    function sendButton() {
+        getResponse();
+    }
+
+    function heartButton() {
+        buttonSendText("Heart clicked!")
+    }
+
+    // Press enter to send a message
+    $("#textInput").keypress(function (e) {
+        if (e.which == 13) {
+            getResponse();
+        }
+    });
+
+    function getBotResponse(input) {
+        var input = input.toLowerCase();
+        //rock paper scissors
+        if (input == "rock") {
+            return "paper";
+        } else if (input == "paper") {
+            return "scissors";
+        } else if (input == "scissors") {
+            return "rock";
+        }
+
+        // Simple responses
+        if (input == "hello" || input == "hi") {
+            return "Hello there!";
+        } else if (input == "goodbye" || input == "bye") {
+            return "Talk to you later!";
+        } else if (input == "help" || input == "contact me") {
+            window.open("https://forms.gle/EUFqN7ytCjpfXNPY8", '_blank').focus();
+            return "Check Your Browser Tabs";
+        } else if (input == "games" || input == "bored") {
+            window.open("{% url 'games' %}", "_self");
+            return "Enjoy your Play!"
+        } else if (input == "blogs" || input == "read") {
+            window.open("{% url 'blogs' %}", "_self");
+            return "Read your favourite blogs!";
+        } else if (input == "phone number" || input == "emailid" || input == "contact you") {
+
+            return "Email id :- aaryanrlondhe99@gmail.com Phone Number: +91 7045854423";
+
+        } else if (input == "download" || input == "ebooks" || input == "dictionary") {
+            window.open("{% url 'download' %}", "_self");
+            return "Check Your Browser Tabs";
+        }else if (input == "about us" || input == "aboutus" || input == "about") {
+            window.open("{% url 'aboutus' %}", "_self");
+            return "Check Your Browser Tabs";
+        }else if (input == "privacy" || input == "cookies" || input == "data") {
+            window.open("{% url 'privacy' %}", "_self");
+            return "Check Your Browser Tabs";
+        }else if (input == "download" || input == "ebooks" || input == "dictionary") {
+            window.open("{% url 'download' %}", "_self");
+            return "Check Your Browser Tabs";
+        }
+        else {
+            return "Try asking something else!";
+        }
+    }
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.sidenav').sidenav();
+    });
+</script>
+</body>

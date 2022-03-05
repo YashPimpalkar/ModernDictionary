@@ -1,0 +1,1003 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bitter:wght@376&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" type="image/ico" href="{% static 'images/logo.ico' %}"/>
+    <link rel="stylesheet" type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <title>Modern Dictionary</title>
+
+    <style>
+        body {
+            font-family: 'Bitter', serif;
+        }
+
+        #nav {
+            background-color: #066084;
+        }
+
+        a:hover {
+            color: black;
+        }
+
+        #games {
+            font-size: 21px;
+        }
+
+        #games:hover {
+            background-color: white;
+            color: #066084;
+            font-weight: bold;
+        }
+
+        p {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        ol {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        h1, h4 {
+            color: #0484c4;
+        }
+
+        .chat-bar-collapsible {
+            position: fixed;
+            bottom: 0;
+            right: 50px;
+
+            box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .collapsible {
+            background-color: #066084;
+            color: white;
+            cursor: pointer;
+            padding: 18px;
+            width: 250px;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            border-radius: 10px 10px 0px 0px;
+        {#border: 3px solid white;#}{#border-bottom: none;#}
+        }
+
+        .content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+            background-color: black;
+        }
+
+        .full-chat-block {
+            width: 350px;
+
+            background: white;
+            text-align: center;
+            overflow: auto;
+            scrollbar-width: none;
+            height: max-content;
+            transition: max-height 0.2s ease-out;
+        }
+
+        .outer-container {
+            min-height: 300px;
+            bottom: 0%;
+            width: 250px;
+            position: relative;
+            background-color: white;
+        }
+
+
+        .chat-container {
+            max-height: 300px;
+            width: 100%;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            scroll-behavior: smooth;
+            border-radius: 10px 10px 0px 0px;
+            hyphens: auto;
+        }
+
+        .chat-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .chat-bar-input-block {
+            display: flex;
+            float: left;
+            box-sizing: border-box;
+            justify-content: space-between;
+            width: 100%;
+            align-items: center;
+            background-color: rgb(235, 235, 235);
+            border-radius: 10px 10px 0px 0px;
+            padding: 10px 0px 10px 10px;
+        }
+
+        .chat-bar-icons {
+            display: flex;
+            justify-content: space-evenly;
+            box-sizing: border-box;
+            width: 25%;
+            float: right;
+            font-size: 20px;
+        }
+
+        #chat-icon:hover {
+            opacity: .7;
+        }
+
+        /* Chat bubbles */
+
+        #userInput {
+            width: 75%;
+        }
+
+        .input-box {
+            float: left;
+            border: none;
+            box-sizing: border-box;
+            width: 100%;
+            border-radius: 10px;
+            padding: 10px;
+            font-size: 16px;
+            color: #000;
+            background-color: white;
+            outline: none
+        }
+
+        .userText {
+            color: white;
+            font-family: Helvetica;
+            font-size: 16px;
+            font-weight: normal;
+            text-align: right;
+            clear: both;
+        }
+
+        .userText span {
+            line-height: 1.5em;
+            display: inline-block;
+            background: #066084;
+            padding: 10px;
+            border-radius: 8px;
+            border-bottom-right-radius: 2px;
+            max-width: 80%;
+            margin-right: 10px;
+            animation: floatup .5s forwards
+        }
+
+        .botText {
+            color: #000;
+            font-family: Helvetica;
+            font-weight: normal;
+            font-size: 16px;
+            text-align: left;
+            width: 280px;
+        }
+
+        .botText span {
+            line-height: 1.5em;
+            display: inline-block;
+            background: #e0e0e0;
+            padding: 10px;
+            border-radius: 8px;
+            border-bottom-left-radius: 2px;
+            max-width: 80%;
+            margin-left: 10px;
+            animation: floatup .5s forwards
+        }
+
+        @keyframes floatup {
+            from {
+                transform: translateY(14px);
+                opacity: .0;
+            }
+            to {
+                transform: translateY(0px);
+                opacity: 1;
+            }
+        }
+
+        @media screen and (max-width: 600px) {
+            .full-chat-block {
+                width: 100%;
+                border-radius: 0px;
+            }
+
+            .chat-bar-collapsible {
+                position: fixed;
+                bottom: 0px;
+                right: 0px;
+                width: 100%;
+            }
+
+            .collapsible {
+                width: 100%;
+                border: 0px;
+                border-top: 3px solid white;
+                border-radius: 0px;
+            }
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-family: Helvetica, sans-serif, Arial;
+        }
+
+        body {
+            margin: 0 auto;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            position: relative;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        footer {
+            background: rgb(0, 0, 0);
+            height: auto;
+            width: 100%;
+            padding-top: 40px;
+            color: #fff;
+        }
+
+        .footer-content h3 {
+            font-size: 1.9rem;
+            font-weight: 500;
+            text-transform: capitalize;
+            line-height: 8rem;
+            text-align: center;
+            position: relative;
+            top: -60px;
+            color: #ffffff;
+        }
+
+        .footer-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .footer-bottom {
+            background: rgb(12, 35, 61);
+            width: 100%;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        .footer-bottom p {
+            font-size: 20px;
+            word-spacing: 2px;
+            text-transform: capitalize;
+        }
+
+        .footer-bottom span {
+            text-transform: uppercase;
+            opacity: .4;
+            font-weight: 200;
+        }
+
+        .footer-col {
+            width: 25%;
+            padding: 0 15px;
+        }
+
+        .footer-col h4 {
+            font-size: 18px;
+            color: #ffffff;
+            text-transform: capitalize;
+            margin-bottom: 28px;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .footer-col h4::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -7px;
+            background-color: #e91e63;
+            height: 2px;
+            box-sizing: border-box;
+            width: 50px;
+        }
+
+        .footer-col ul li:not(:last-child) {
+            margin-bottom: 10px;
+        }
+
+        .footer-col ul li a {
+            font-size: 20px;
+            text-transform: capitalize;
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 300;
+            color: #bbbbbb;
+            display: block;
+            transition: all 0.3s ease;
+        }
+
+        .footer-col ul li a:hover {
+            color: #ffffff;
+            padding-left: 8px;
+        }
+
+        .footer-col .social-links a {
+            display: inline-block;
+            height: 40px;
+            width: 40px;
+            background-color: rgb(253, 10, 144);
+            margin: 0 8px 8px 0;
+            text-align: center;
+            line-height: 40px;
+            border-radius: 50%;
+            color: #ffffff;
+            transition: all 0.5s ease;
+        }
+
+        .footer-col .social-links a:hover {
+            color: #24262b;
+            background-color: #ffffff;
+        }
+
+        /*responsive*/
+        @media (max-width: 767px) {
+            .footer-col {
+                width: 50%;
+                margin-bottom: 30px;
+            }
+        }
+
+        @media (max-width: 574px) {
+            .footer-col {
+                width: 100%;
+            }
+        }
+
+        @media screen and (max-width: 1000px) {
+            #logo, #menu {
+                font-size: 50px;
+            }
+
+            footer {
+                margin-top: 890px;
+            }
+
+            body {
+                height: 100px;
+            }
+
+            #games {
+                font-size: 40px;
+                padding: 40px;
+            }
+
+            p, li {
+                font-size: 40px;
+            }
+
+            body h4 {
+                font-size: 45px;
+            }
+
+            .footer h4 {
+                font-size: 30px;
+            }
+
+            .footer ul li a {
+                font-size: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+<nav id="nav">
+    <div class="nav-wrapper">
+        <div class="container">
+            <a href="/" class="brand-logo" id="logo">Modern Dictionary</a>
+            <a href="/" class="sidenav-trigger" data-target="mobile-nav">
+                <i class="material-icons" id="menu">menu</i>
+            </a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <li><a href="{% url 'blogs' %}" id="games">Back</a></li>
+                <li><a href="{% url 'download' %}" id="games">Download</a></li>
+                <li><a href="{% url 'games' %}" id="games">Games</a></li>
+                <li><a href="/" id="games">Home</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<ul class="sidenav" id="mobile-nav">
+    <li><a href="{% url 'blogs' %}" id="games">Back</a></li>
+    <li><a href="{% url 'download' %}" id="games">Download</a></li>
+    <li><a href="{% url 'games' %}" id="games">Games</a></li>
+    <li><a href="/" id="games">Home</a></li>
+</ul>
+<div id="google_translate_element"></div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<div class="container">
+    <h1 style="text-align: center;"><b>English Grammar</b></h1>
+    <hr size="13" width="100%" color="#066084" align="center">
+    <p>
+        English grammar is the way in which meanings are encoded into wordings in the English language. This includes
+        the structure of words, phrases, clauses, sentences, and whole texts.
+        This article describes a generalized, present-day Standard English – a form of speech and writing used in public
+        discourse, including broadcasting, education, entertainment, government, and news, over a range of registers,
+        from formal to informal. Divergences from the grammar described here occur in some historical, social, cultural
+        and regional varieties of English, although these are more minor than differences in pronunciation and
+        vocabulary.
+    </p>
+    <p>
+        Modern English has largely abandoned the inflectional case system of Indo-European in favor of analytic
+        constructions. The personal pronouns retain morphological case more strongly than any other word class (a
+        remnant of the more extensive Germanic case system of Old English).
+        For other pronouns, and all nouns, adjectives, and articles,
+        grammatical function is indicated only by word order, by prepositions, and by the "Saxon genitive or English
+        possessive" .
+        Eight "word classes" or "parts of speech" are commonly distinguished in English: nouns, determiners, pronouns,
+        verbs, adjectives, adverbs, prepositions, and conjunctions. Nouns form the largest word class, and verbs the
+        second-largest.
+        Unlike nouns in almost all other Indo-European languages, English nouns do not have grammatical gender.
+
+    </p>
+    <h4><b>Adjective</b></h4>
+    <hr>
+    <p>
+        English adjectives, as with other word classes, cannot in general be identified as such by their form,
+        although many of them are formed from nouns or other words by the addition of a suffix, such as -al (habitual),
+        -ful (blissful), -ic (atomic), -ish (impish, youngish), -ous (hazardous), etc.;
+        or from other adjectives using a prefix: disloyal, irredeemable, unforeseen, overtired.
+        Adjectives may be used attributively, as part of a noun phrase (nearly always preceding the noun they modify;
+        for exceptions see postpositive adjective), as in the big house, or
+        predicatively, as in the house is big. Certain adjectives are restricted to one or other use; for example,
+        drunken is attributive (a drunken sailor), while drunk is usually predicative (the sailor was drunk).
+    </p>
+    <h4><b> Nouns </b></h4>
+    <hr>
+    <p>
+        Many common suffixes form nouns from other nouns or from other types of words, such as -age (as in shrinkage),
+        -hood (as in sisterhood), and so on, although many nouns are base forms not containing any such suffix (such as
+        cat, grass, France). Nouns are also often created by conversion of verbs or adjectives,
+        as with the words talk and reading (a boring talk, the assigned reading).
+        Nouns are sometimes classified semantically (by their meanings) as proper nouns and common nouns (Cyrus, China
+        vs. frog, milk) or as concrete nouns and abstract nouns (book, laptop vs. embarrassment, prejudice). A
+        grammatical distinction is often made between count (countable) nouns such as clock and city,
+        and non-count (uncountable) nouns such as milk and decor. Some nouns can function both as countable and as
+        uncountable such as the word "wine" (This is a good wine, I prefer red wine).
+        Countable nouns generally have singular and plural forms. In most cases the plural is formed from the singular
+        by adding -[e]s (as in dogs, bushes), although there are also irregular forms (woman/women, foot/feet, etc.),
+        including cases where the two forms are identical (sheep, series). For more details, see English plural.
+        Certain nouns can be used with plural verbs even though they are singular in form, as in The government were ...
+        (where the government is considered to refer to the people constituting the government).
+        This is a form of synesis; it is more common in British than American English. See English plural § Singulars
+        with collective meaning treated as plural.
+        English nouns are not marked for case as they are in some languages, but they have possessive forms, through the
+        addition of -'s (as in John's, children's) or just an apostrophe (with no change in pronunciation) in the case
+        of -[e]s plurals and sometimes other words ending with -s (the dogs' owners, Jesus' love). More generally, the
+        ending can be applied to noun phrases (as in the man you saw yesterday's sister); see below. The possessive form
+        can be used either as a determiner (John's cat) or as a noun phrase (John's is the one next to Jane's).
+        The status of the possessive as an affix or a clitic is the subject of debate. It differs from the noun
+        inflection of languages such as German, in that the genitive ending may attach to the last word of the phrase.
+        To account for this, the possessive can be analysed, for instance as a clitic construction (an "enclitic
+        postposition") or as an inflection of the last word of a phrase ("edge inflection").
+
+    <h4><b> Phrases </b></h4>
+    <hr>
+    <p>
+        Noun phrases are phrases that function grammatically as nouns within sentences, for example as the subject or
+        object of a verb. Most noun phrases have a noun as their head.
+        An English noun phrase typically takes the following form (not all elements need be present):
+        DETERMINER + PRE-MODIFIERS + NOUN + POST MODIFIERS/COMPLEMENT
+
+    <ol>
+        <p>In this structure:</p>
+        <li>The determiner may be an article (the, a[n]) or other equivalent word, as described in the following
+            section. In many contexts, it is required for a noun phrase to include some determiner.
+        </li>
+        <li>Pre-modifiers include adjectives and some adjective phrases (such as red, really lovely), and noun adjuncts
+            (such as college in the phrase the college student). Adjectival modifiers usually come before noun adjuncts.
+        </li>
+        <li>A complement or post modifier may be a prepositional phrase (... of London), a relative clause (like
+            ...which we saw yesterday), certain adjective or participial phrases (... sitting on the beach), or a
+            dependent clause or infinitive phrase appropriate to the noun (like ... that the world is round after a noun
+            such as fact or statement, or ... to travel widely after a noun such as desire).
+        </li>
+        <li>
+            An example of a noun phrase that includes all of the above-mentioned elements is that rather attractive
+            young
+            college student to whom you were talking. Here that is the determiner, rather attractive and young are
+            adjectival pre-modifiers, college is a noun adjunct, student is the noun serving as the head of the phrase,
+            and
+            to whom you were talking is a post-modifier (a relative clause in this case). Notice the order of the
+            pre-modifiers;
+            the determiner that must come first and the noun adjunct college must come after the adjectival modifiers.
+            Coordinating conjunctions such as and, or, and but can be used at various levels in noun phrases, as in
+            John,
+            Paul, and Mary; the matching green coat and hat; a dangerous but exciting ride; a person sitting down or
+            standing up. See § Conjunctions below for more explanation.
+            Noun phrases can also be placed in apposition (where two consecutive phrases refer to the same thing), as in
+            that president, Abraham Lincoln, ... (where that president and Abraham Lincoln are in apposition). In some
+            contexts, the same can be expressed by a prepositional phrase, as in the twin curses of famine and
+            pestilence
+            (meaning "the twin curses" that are "famine and pestilence").
+            Particular forms of noun phrases include:
+        </li>
+        <li>Phrases formed by the determiner the with an adjective, as in the homeless, the English (these are plural
+            phrases referring to homeless people or English people in general);
+        </li>
+        <li>Phrases with a pronoun rather than a noun as the head (see below);</li>
+    </ol>
+
+    </p>
+    <h4><b> Conjunctions </b></h4>
+    <hr>
+    <p>
+        Conjunctions express a variety of logical relations between items, phrases, clauses and sentences. The principal
+        coordinating conjunctions in English are: and, or, but, nor, so, yet, and for. These can be used in many
+        grammatical contexts to link two or more items of equal grammatical status, for example:
+    <ol>
+        <li>Noun phrases combined into a longer noun phrase, such as John, Eric, and Jill, the red coat or the blue one.
+            When and is used, the resulting noun phrase is plural. A determiner does not need to be repeated with the
+            individual elements:
+        </li>
+        <li> the cat, the dog, and the mouse and the cat, dog, and mouse are both correct.</li>
+        <li> The same applies to other modifiers. (The word but can be used here in the sense of "except": nobody but
+            you.)
+        </li>
+        <li>Adjective or adverb phrases combined into a longer adjective or adverb phrase: tired but happy, over the
+            fields and far away.
+        </li>
+        <li>Verbs or verb phrases combined as in he washed, peeled, and diced the turnips (verbs conjoined, object
+            shared); he washed the turnips, peeled them, and diced them (full verb phrases, including objects,
+            conjoined).
+        </li>
+        <li>Other equivalent items linked, such as prefixes linked in pre- and post-test counselling, numerals as in two
+            or three buildings, etc.
+        </li>
+        <li>Clauses or sentences linked, as in We came, but they wouldn't let us in. They wouldn't let us in, nor would
+            they explain what we had done wrong.
+        </li>
+    </ol>
+    <h4><b> Prepositions </b></h4>
+    <hr>
+    <p>
+        Prepositions form a closed word class, although there are also certain phrases that serve as prepositions, such
+        as in front of. A single preposition may have a variety of meanings, often including temporal, spatial and
+        abstract.
+        Many words that are prepositions can also serve as adverbs. Examples of common English prepositions (including
+        phrasal instances) are of, in, on, over, under, to, from, with, in front of, behind, opposite, by, before,
+        after, during, through, in spite of or despite, between, among, etc.
+        A preposition is usually used with a noun phrase as its complement. A preposition together with its complement
+        is called a prepositional phrase. Examples are in England, under the table, after six pleasant weeks, between
+        the land and the sea. A prepositional phrase can be used as a complement or post-modifier of a noun in a noun
+        phrase,
+        as in the man in the car, the start of the fight; as a complement of a verb or adjective, as in deal with the
+        problem, proud of oneself; or generally as an adverb phrase (see above).
+        English allows the use of "stranded" prepositions. This can occur in interrogative and relative clauses, where
+        the interrogative or relative pronoun that is the preposition's complement is moved to the start (fronted),
+        leaving the preposition in place. This kind of structure is avoided in some kinds of formal English. For
+        example:
+    <ol>
+        <li> What are you talking about? (Possible alternative version: About what are you talking?)</li>
+        <li> The song that you were listening to ... (more formal: The song to which you were listening ...)
+            Notice that in the second example the relative pronoun that could be omitted.
+        </li>
+        <li> Stranded prepositions can also arise in passive voice constructions and other uses of passive past
+            participial phrases, where the complement in a prepositional phrase can become zero in the same way that a
+            verb's direct object would: it was looked at;
+            I will be operated on; get your teeth seen to. The same can happen in certain uses of infinitive phrases: he
+            is nice to talk to; this is the page to make copies of.
+        </li>
+    </ol>
+
+    </p>
+    <h4><b> Verbs </b></h4>
+    <hr>
+    <p>
+        The basic form of an English verb is not generally marked by any ending, although there are certain suffixes
+        that are frequently used to form verbs, such as -ate (formulate), -fy (electrify), and -ise/ize
+        (realise/realize). Many verbs also contain prefixes, such as un- (unmask), out- (outlast), over- (overtake), and
+        under- (undervalue).
+        Verbs can also be formed from nouns and adjectives by zero derivation, as with the verbs snare, nose, dry, and
+        calm.
+        Most verbs have three or four inflected forms in addition to the base form: a third-person singular present
+        tense form in -(e)s (writes, botches), a present participle and gerund form in -ing (writing), a past tense
+        (wrote), and – though often identical to the past tense form – a past participle (written). Regular verbs have
+        identical past tense and past participle forms in -ed, but there are 100 or so irregular English verbs with
+        different forms (see list).
+        The verbs have, do and say also have irregular third-person present tense forms (has, does /dʌz/, says /sɛz/).
+        The verb be has the largest number of irregular forms (am, is, are in the present tense, was, were in the past
+        tense, been for the past participle).
+        Most of what are often referred to as verb tenses (or sometimes aspects) in English are formed using auxiliary
+        verbs. Apart from what are called the simple present (write, writes) and simple past (wrote), there are also
+        continuous (progressive) forms (am/is/are/was/were writing), perfect forms (have/has/had written, and the
+        perfect continuous have/has/had been writing), future forms (will write, will be writing, will have written,
+        will have been writing),
+        and conditionals (also called "future in the past") with would in place of will. The auxiliaries shall and
+        should sometimes replace will and would in the first person. For the uses of these various verb forms, see
+        English verbs and English clause syntax.
+        The basic form of an English verb is not generally marked by any ending, although there are certain suffixes
+        that are frequently used to form verbs, such as -ate (formulate), -fy (electrify), and -ise/ize
+        (realise/realize). Many verbs also contain prefixes, such as un- (unmask), out- (outlast), over- (overtake), and
+        under- (undervalue).Verbs can also be formed from nouns and adjectives by zero derivation, as with the verbs
+        snare, nose, dry, and calm.
+        Most verbs have three or four inflected forms in addition to the base form: a third-person singular present
+        tense form in -(e)s (writes, botches), a present participle and gerund form in -ing (writing), a past tense
+        (wrote), and – though often identical to the past tense form – a past participle (written). Regular verbs have
+        identical past tense and past participle forms in -ed, but there are 100 or so irregular English verbs with
+        different forms (see list).
+        The verbs have, do and say also have irregular third-person present tense forms (has, does /dʌz/, says /sɛz/).
+        The verb be has the largest number of irregular forms (am, is, are in the present tense, was, were in the past
+        tense, been for the past participle).
+        Most of what are often referred to as verb tenses (or sometimes aspects) in English are formed using auxiliary
+        verbs. Apart from what are called the simple present (write, writes) and simple past (wrote), there are also
+        continuous (progressive) forms (am/is/are/was/were writing), perfect forms (have/has/had written,
+        and the perfect continuous have/has/had been writing), future forms (will write, will be writing, will have
+        written, will have been writing),
+        and conditionals (also called "future in the past") with would in place of will. The auxiliaries shall and
+        should sometimes replace will and would in the first person. For the uses of these various verb forms, see
+        English verbs and English clause syntax.
+
+    </p>
+    <h4><b> Adverbs </b></h4>
+    <hr>
+    <p>
+        Adverbs perform a wide range of functions. They typically modify verbs (or verb phrases), adjectives (or
+        adjectival phrases), or other adverbs (or adverbial phrases). However, adverbs also sometimes qualify noun
+        phrases (only the boss; quite a lovely place), pronouns and determiners (almost all), prepositional phrases
+        (halfway through the movie), or whole sentences, to provide contextual comment or indicate an attitude
+        (Frankly, I don't believe you). They can also indicate a relationship between clauses or sentences (He died, and
+        consequently I inherited the estate).
+        Many English adverbs are formed from adjectives by adding the ending -ly, as in hopefully, widely, theoretically
+        (for details of spelling and etymology, see -ly). Certain words can be used as both adjectives and adverbs, such
+        as fast, straight, and hard; these are flat adverbs. In earlier usage more flat adverbs were accepted in formal
+        usage; many of these survive in idioms and colloquially. (That's just plain ugly.)
+        Some adjectives can also be used as flat adverbs when they actually describe the subject. (The streaker ran
+        naked, not **The streaker ran nakedly.) The adverb corresponding to the adjective good is well (note that bad
+        forms the regular badly, although ill is occasionally used in some phrases).
+        There are also many adverbs that are not derived from adjectives, including adverbs of time, of frequency, of
+        place, of degree and with other meanings. Some suffixes that are commonly used to form adverbs from nouns are
+        -ward[s] (as in homeward[s]) and -wise (as in lengthwise).
+    </p>
+
+    <p>
+        Most adverbs form comparatives and superlatives by modification with more and most: often, more often, most
+        often; smoothly, more smoothly, most smoothly (see also comparison of adjectives, above). However, a few adverbs
+        retain irregular inflection for comparative and superlative forms: much, more, most; a little, less, least;
+        well, better, best; badly, worse, worst; far, further (farther), furthest (farthest); or follow the regular
+        adjectival inflection: fast, faster, fastest; soon, sooner, soonest; etc.
+        Adverbs indicating the manner of an action are generally placed after the verb and its objects (We considered
+        the proposal carefully), although other positions are often possible (We carefully considered the proposal).
+        Many adverbs of frequency, degree, certainty, etc. (such as often, always, almost, probably, and various others
+        such as just) tend to be placed before the verb (they usually have chips), although if there is an auxiliary or
+        other "special verb" (see § Verbs above), then the normal position for such adverbs is
+        after that special verb (or after the first of them, if there is more than one): I have just finished the
+        crossword;
+        She can usually manage a pint; We are never late; You might possibly have been unconscious. Adverbs that provide
+        a connection with previous information (such as next, then, however), and those that provide the context (such
+        as time or place) for a sentence, are typically placed at the start of the sentence: Yesterday we went on a
+        shopping expedition. If the verb has an object, the adverb comes after the object (He finished the test
+        quickly).
+        When there is more than one types of adverb,
+        they usually appear in the order: manner, place, time (His arm was hurt severely at home yesterday).
+        A special type of adverb is the adverbial particle used to form phrasal verbs (such as up in pick up, on in get
+        on, etc.) If such a verb also has an object, then the particle may precede or follow the object, although it
+        will normally follow the object if the object is a pronoun (pick the pen up or pick up the pen, but pick it up).
+    </p>
+
+    <h4><b> Word classes and phrases </b></h4>
+    <hr>
+    <p>
+        Nouns, verbs, adjectives, and adverbs form open classes – word classes that readily accept new members, such as
+        the noun celebutante (a celebrity who frequents the fashion circles), and other similar relatively new words.
+        The others are considered to be closed classes. For example, it is rare for a new pronoun to enter the language.
+        Determiners, traditionally classified along with adjectives, have not always been regarded as a separate part of
+        speech.
+        Interjections are another word class, but these are not described here as they do not form part of the clause
+        and sentence structure of the language.
+        Linguists generally accept nine English word classes: nouns, verbs, adjectives, adverbs, pronouns, prepositions,
+        conjunctions, determiners, and exclamations. English words are not generally marked for word class. It is not
+        usually possible to tell from the form of a word which class it belongs to except, to some extent, in the case
+        of words with inflectional endings or derivational suffixes. On the other hand, most words belong to more than
+        one-word class. For example,
+        run can serve as either a verb or a noun (these are regarded as two different lexemes).
+        Lexemes may be inflected to express different grammatical categories. The lexeme run has the forms runs, ran,
+        runny, runner, and running. Words in one class can sometimes be derived from those in another. This has the
+        potential to give rise to new words. The noun aerobics has recently given rise to the adjective aerobicized.
+
+
+</div>
+
+
+<!-- Compiled and minified CSS -->
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+<!-- Compiled and minified JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script type="text/javascript">
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+            pageLanguage: 'en', // set default for your need
+            includedLanguages: 'bg,bs,de,en,es,fr,hr,hu,it,ja,ko,mk,nl,ro,ru,sl,sq,sr,zh-CN,mr', // include other languages per need
+            layout: google.translate.TranslateElement.InlineLayout.SIMPLE, // style or type of the box
+            gaTrack: true, // otherwise false if not using GA
+            gaId: 'UA-XXXXXXX-X' // your Google Analytics tracking ID, not needed if not using GA
+        }, 'google_translate_element');
+    }
+</script>
+<script type="text/javascript"
+        src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<footer class="footer">
+    <div class="container" id="">
+        <div class="row">
+            <div class="footer-col">
+                <h4>company</h4>
+                <ul>
+                    <li><a href="{% url 'aboutus' %}">about us</a></li>
+                    <li><a href="{% url 'privacy' %}">privacy policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>get help</h4>
+                <ul>
+                    <li>
+                        <a href="https://docs.google.com/forms/d/e/1FAIpQLSfGF14XUm0-lV9cmSUeQFvJHgeCUu462_4_Siz8KGUpjuOdkw/viewform"
+                           target="_blank">Customer care</a></li>
+                    <li>
+                        <a href="https://docs.google.com/forms/d/e/1FAIpQLSfGF14XUm0-lV9cmSUeQFvJHgeCUu462_4_Siz8KGUpjuOdkw/viewform"
+                           target="_blank">Report</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+
+            </div>
+            <div class="footer-col">
+                <h4>follow us</h4>
+                <div class="social-links" style="display: flex;justify-content: space-evenly;">
+                    <a href="https://www.facebook.com/profile.php?id=100074285931176" target="_blank"><i
+                            class="fab fa-facebook-f"></i></a>
+                    <a href="https://twitter.com/ModernDictiona1" target="_blank"><i class="fab fa-twitter"></i></a>
+                    <a href="https://www.instagram.com/moderndictionary5/" target="_blank"><i
+                            class="fab fa-instagram"></i></a>
+                    <a href="https://www.linkedin.com/in/modern-dictionary-b713b1225/" target="_blank"><i
+                            class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <h6>Copyright &copy; 2021 moderndictionary.com</h6>
+    </div>
+</footer>
+<!-- CHAT BAR BLOCK -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<div class="chat-bar-collapsible" style="width: 250px;border-radius: 80px 80px 0px 0px;margin-top: 50px;">
+    <button id="chat-button" type="button" class="collapsible" style="background-color: #066084;">Chat with Us!
+        {#        <i id="chat-icon" style="color: #fff;" class="fa fa-fw fa-comments-o"></i>#}
+    </button>
+
+    <div class="content">
+        <div class="full-chat-block">
+            <!-- Message Container -->
+            <div class="outer-container">
+                <div class="chat-container">
+                    <!-- Messages -->
+                    <div id="chatbox">
+                        <h5 id="chat-timestamp"></h5>
+                        <p id="botStarterMessage" class="botText"><span>Loading...</span></p>
+                    </div>
+
+                    <!-- User input box -->
+                    <div class="chat-bar-input-block">
+                        <div id="userInput">
+                            <input id="textInput" class="input-box" type="text" name="msg"
+                                   placeholder="Tap 'Enter' to send a message">
+                            <p></p>
+                        </div>
+
+                        <div class="chat-bar-icons">
+                            <i id="chat-icon" style="color: crimson;" class="fa fa-fw fa-heart"
+                               onclick="heartButton()"></i>
+                            <i id="chat-icon" style="color: #333;" class="fa fa-fw fa-send"
+                               onclick="sendButton()"></i>
+                        </div>
+                    </div>
+
+                    <div id="chat-bar-bottom">
+                        <p></p>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+<script>
+    // Collapsible
+    var coll = document.getElementsByClassName("collapsible");
+
+    for (let i = 0; i < coll.length; i++) {
+        coll[i].addEventListener("click", function () {
+            this.classList.toggle("active");
+
+            var content = this.nextElementSibling;
+
+            if (content.style.maxHeight) {
+                content.style.maxHeight = null;
+            } else {
+                content.style.maxHeight = content.scrollHeight + "px";
+            }
+
+        });
+    }
+
+    function getTime() {
+        let today = new Date();
+        hours = today.getHours();
+        minutes = today.getMinutes();
+
+        if (hours < 10) {
+            hours = "0" + hours;
+        }
+
+        if (minutes < 10) {
+            minutes = "0" + minutes;
+        }
+
+        let time = hours + ":" + minutes;
+        return time;
+    }
+
+    // Gets the first message
+    function firstBotMessage() {
+        let firstMessage = "How's it going?"
+        document.getElementById("botStarterMessage").innerHTML = '<p class="botText"><span>' + firstMessage + '</span></p>';
+
+        let time = getTime();
+
+        $("#chat-timestamp").append(time);
+        document.getElementById("userInput").scrollIntoView(false);
+    }
+
+    firstBotMessage();
+
+    // Retrieves the response
+    function getHardResponse(userText) {
+        let botResponse = getBotResponse(userText);
+        let botHtml = '<p class="botText"><span>' + botResponse + '</span></p>';
+        $("#chatbox").append(botHtml);
+
+        document.getElementById("chat-bar-bottom").scrollIntoView(true);
+    }
+
+    //Gets the text text from the input box and processes it
+    function getResponse() {
+        let userText = $("#textInput").val();
+
+        if (userText == "") {
+            userText = "I love Code Palace!";
+        }
+
+        let userHtml = '<p class="userText"><span>' + userText + '</span></p>';
+
+        $("#textInput").val("");
+        $("#chatbox").append(userHtml);
+        document.getElementById("chat-bar-bottom").scrollIntoView(true);
+
+        setTimeout(() => {
+            getHardResponse(userText);
+        }, 1000)
+
+    }
+
+    // Handles sending text via button clicks
+    function buttonSendText(sampleText) {
+        let userHtml = '<p class="userText"><span>' + sampleText + '</span></p>';
+
+        $("#textInput").val("");
+        $("#chatbox").append(userHtml);
+        document.getElementById("chat-bar-bottom").scrollIntoView(true);
+
+        //Uncomment this if you want the bot to respond to this buttonSendText event
+        // setTimeout(() => {
+        //     getHardResponse(sampleText);
+        // }, 1000)
+    }
+
+    function sendButton() {
+        getResponse();
+    }
+
+    function heartButton() {
+        buttonSendText("Heart clicked!")
+    }
+
+    // Press enter to send a message
+    $("#textInput").keypress(function (e) {
+        if (e.which == 13) {
+            getResponse();
+        }
+    });
+
+    function getBotResponse(input) {
+        var input = input.toLowerCase();
+        //rock paper scissors
+        if (input == "rock") {
+            return "paper";
+        } else if (input == "paper") {
+            return "scissors";
+        } else if (input == "scissors") {
+            return "rock";
+        }
+
+        // Simple responses
+        if (input == "hello" || input == "hi") {
+            return "Hello there!";
+        } else if (input == "goodbye" || input == "bye") {
+            return "Talk to you later!";
+        } else if (input == "help" || input == "contact me") {
+            window.open("https://forms.gle/EUFqN7ytCjpfXNPY8", '_blank').focus();
+            return "Check Your Browser Tabs";
+        } else if (input == "games" || input == "bored") {
+            window.open("{% url 'games' %}", "_self");
+            return "Enjoy your Play!"
+        } else if (input == "blogs" || input == "read") {
+            window.open("{% url 'blogs' %}", "_self");
+            return "Read your favourite blogs!";
+        } else if (input == "phone number" || input == "emailid" || input == "contact you") {
+
+            return "Email id :- aaryanrlondhe99@gmail.com Phone Number: +91 7045854423";
+
+        } else if (input == "download" || input == "ebooks" || input == "dictionary") {
+            window.open("{% url 'download' %}", "_self");
+            return "Check Your Browser Tabs";
+        } else if (input == "about us" || input == "aboutus" || input == "about") {
+            window.open("{% url 'aboutus' %}", "_self");
+            return "Check Your Browser Tabs";
+        } else if (input == "privacy" || input == "cookies" || input == "data") {
+            window.open("{% url 'privacy' %}", "_self");
+            return "Check Your Browser Tabs";
+        } else if (input == "download" || input == "ebooks" || input == "dictionary") {
+            window.open("{% url 'download' %}", "_self");
+            return "Check Your Browser Tabs";
+        } else {
+            return "Try asking something else!";
+        }
+    }
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.sidenav').sidenav();
+    });
+</script>
+</body>
+</html>

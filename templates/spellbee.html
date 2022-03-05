@@ -1,0 +1,648 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bitter:wght@376&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" type="image/ico" href="{% static 'images/logo.ico' %}"/>
+    <link rel="stylesheet" type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <title>Spell Bee Game</title>
+</head>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+    @keyframes slideInFromLeft {
+        0% {
+            transform: translateX(-100%);
+        }
+        100% {
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes slideInFromRight {
+        0% {
+            transform: translateX(100%);
+        }
+        100% {
+            transform: translateX(0);
+        }
+    }
+
+    html {
+        height: 100%;
+    }
+
+    body {
+        background-color: white;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center 0;
+        font-family: 'Bitter', serif;
+    }
+
+    #box {
+        border-radius: 20px;
+        background-color: #0083c4;
+        font-family: 'Bitter', sans-serif;
+        color: white;
+    }
+
+    #nav {
+        background-color: #066084;
+    }
+
+    #speaker {
+        color: white;
+    }
+
+    #speaker:hover {
+        color: black;
+    }
+
+    #game {
+        font-size: 20px;
+    }
+
+    #game:hover {
+        background-color: white;
+        color: #066084;
+        font-weight: bold;
+    }
+
+    #next {
+        background-color: #066084;
+        color: #ffffff;
+        font-family: 'Bitter', serif;
+        font-size: 20px;
+        border-radius: 15px;
+        animation: 2s ease-out 0s 1 slideInFromRight;
+    }
+
+    #correct {
+        animation: 2s ease-out 0s 1 slideInFromLeft;
+        color: white;
+    }
+
+    #incorrect {
+        animation: 2s ease-out 0s 1 slideInFromLeft;
+        color: black;
+    }
+
+    h2 {
+        font-weight: bold !important;
+        font-size: 35px !important;
+        color: #b1f9c0 !important;
+    }
+
+    #currentWord {
+        font-size: 40px;
+        font-family: 'Cantora One', sans-serif;
+        letter-spacing: 4px;
+        color: white;
+    }
+
+    .varColor {
+        color: white;
+    }
+
+    {#.noBlink {#}
+    {#    visibility: hidden;#}
+
+    @keyframes blink {
+        0% {
+            opacity: 0;
+        }
+        50% {
+            opacity: .5;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
+
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        position: relative;
+    }
+
+    ul {
+        list-style: none;
+    }
+
+    li {
+        font-size: 18px;
+    }
+
+    footer {
+        margin-top: 10%;
+        font-family: 'Cantora One', serif;
+        background: rgb(0, 0, 0);
+        height: auto;
+        width: 100%;
+        padding-top: 40px;
+        color: #fff;
+
+    }
+
+    .footer-content h3 {
+        font-size: 1.9rem;
+        font-weight: 500;
+        text-transform: capitalize;
+        line-height: 8rem;
+        text-align: center;
+        position: relative;
+        top: -60px;
+        color: #ffffff;
+
+
+    }
+
+    .footer-bottom {
+        background: rgb(12, 35, 61);
+        width: 100%;
+        padding: 20px 0;
+        text-align: center;
+    }
+
+    .footer-bottom p {
+        font-size: 20px;
+        word-spacing: 2px;
+        text-transform: capitalize;
+    }
+
+    .footer-bottom span {
+        text-transform: uppercase;
+        opacity: .4;
+        font-weight: 200;
+    }
+
+    .footer-col {
+        width: 25%;
+        padding: 0 15px;
+    }
+
+    .footer-col h4 {
+        font-size: 20px;
+        color: #ffffff;
+        text-transform: capitalize;
+        margin-bottom: 28px;
+        font-weight: 500;
+        position: relative;
+
+    }
+
+    .footer-col h4::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: -7px;
+        background-color: #e91e63;
+        height: 2px;
+        box-sizing: border-box;
+        width: 50px;
+    }
+
+    .footer-col ul li:not(:last-child) {
+        margin-bottom: 10px;
+    }
+
+    .footer-col ul li a {
+    {#font-size: px;#} text-transform: capitalize;
+        color: #ffffff;
+        text-decoration: none;
+        font-weight: 300;
+        color: #bbbbbb;
+        display: block;
+        transition: all 0.3s ease;
+    }
+
+    .footer-col ul li a:hover {
+        color: #ffffff;
+        padding-left: 8px;
+    }
+
+    .footer-col .social-links a {
+        display: inline-block;
+        height: 40px;
+        width: 40px;
+        background-color: rgb(253, 10, 144);
+        margin: 0 8px 8px 0;
+        text-align: center;
+        line-height: 40px;
+        border-radius: 50%;
+        color: #ffffff;
+        transition: all 0.5s ease;
+    }
+
+    .footer-col .social-links a:hover {
+        color: #24262b;
+        background-color: #ffffff;
+    }
+
+    /*responsive*/
+    @media (max-width: 767px) {
+        .footer-col {
+            width: 50%;
+            margin-bottom: 30px;
+        }
+    }
+
+    @media (max-width: 574px) {
+        .footer-col {
+            width: 100%;
+        }
+    }
+</style>
+<body>
+<nav id="nav">
+    <div class="nav-wrapper">
+        <div class="container">
+            <a href="/" class="brand-logo">Modern Dictionary</a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <li><a href="{% url 'games' %}" id="game">Back</a></li>
+                <li><a href="{% url 'blogs' %}" id="game">Blogs</a></li>
+                <li><a href="{% url 'download' %}" id="game">Download</a></li>
+                <li><a href="/" id="game">Home</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container" id="box">
+    <div class="center">
+        <h1>Spelling Bee</h1>
+        <p>
+            <a onclick="playsound()" id="speaker">
+                <i class="large material-icons">volume_up</i>
+            </a>
+        <h4>Click to listen the Audio &#9757;</h4>
+        </p>
+        <div id="word"><h5>Word: <span id="currentWord"></span></h5></div>
+        <div><h6><span id="totalWins" class="varColor"></span></h6></div>
+        <div id="spellresult"></div>
+        <div><h5>Guesses Left: <span id="remainingGuesses" class="varColor"></span></h5></div>
+
+        <div><h5 style="padding-bottom: 30px;">Already Guessed: <span id="guessedLetters" class="varColor"></span></h5>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- Compiled and minified CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+<!-- Compiled and minified JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script>
+    var possibleWords = [
+        "ROCKY MOUNTAIN",
+        'ABLE',
+        'BAD',
+        'BEST',
+        'BETTER',
+        'BIG',
+        'BLACK',
+        'CERTAIN',
+        'CLEAR',
+        'DIFFERENT',
+        'EARLY',
+        'EASY',
+        'ECONOMIC',
+        'FEDERAL',
+        'FREE',
+        'FULL',
+        'GOOD',
+        'GREAT',
+        'HARD',
+        'HIGH',
+        'HUMAN',
+        'IMPORTANT',
+        'INTERNATIONAL',
+        'LARGE',
+        'LATE',
+        'LITTLE',
+        'LOCAL',
+        'LONG',
+        'LOW',
+        'MAJOR',
+        'MILITARY',
+        'NATIONAL',
+        'NEW',
+        'OLD',
+        'ONLY',
+        'OTHER',
+        'POLITICAL',
+        'POSSIBLE',
+        'PUBLIC',
+        'REAL',
+        'RECENT',
+        'RIGHT',
+        'SMALL',
+        'SOCIAL',
+        'SPECIAL',
+        'STRONG',
+        'SURE',
+        'TRUE',
+        'WHITE',
+        'WHOLE',
+        'YOUNG',
+        "ZION",
+        "YELLOWSTONE",
+        "YOSEMITE",
+        // "GRAND TETON",
+        // "GLACIER",
+        // "ACADIA",
+        // "MAMMOTH CAVE",
+        "OLYMPIC",
+        // "GREAT SMOKY MOUNTAINS",
+        // "ARCHES",
+        // "BRYCE CANYON",
+        // "CARLSBAD CAVERNS",
+        "CRATER LAKE",
+        "DEATH VALLEY",
+        // "DENALI",
+        // "JOSHUA TREE",
+        // "CAPITOL REEF",
+        // "CANYON LANDS",
+        // "BADLANDS",
+        "BIG BEND",
+        // "SEQUOIA",
+        // "BISCAYNE",
+        // "SHENANDOAH",
+        "HOT SPRINGS",
+        // "MOUNT RANIER",
+        // "SAGUARO",
+        // "KINGS CANYON",
+        // "EVERGLADES",
+        // "MESA VERDE",
+        // "REDWOOD",
+        // "CHANNEL ISLANDS",
+        // "BLACK CANYON OF THE GUNNISON",
+        // "CONGAREE",
+        // "CUYAHOGA VALLEY",
+        // "DRY TORTUGAS",
+        // "GATEWAY ARCH",
+        // "GATES OF THE ARCTIC",
+        // "AMERICAN SAMOA",
+        // "GLACIER BAY",
+        // "GREAT BASIN",
+        // "GUADALUPE MOUNTAINS",
+        // "HAWAII VOLCANOES",
+        // "HOT SPRINGS",
+        // "INDIANA DUNES",
+        // "KATMAI",
+        // "KENAI FJORDS",
+        // "LASSEN VOLCANIC",
+        // "NORTH CASCADES",
+        // "PETRIFIED FOREST",
+        // "PINNACLES",
+        // "THEODORE ROOSEVELT",
+        // "VIRGIN ISLANDS",
+        // "VOYAGEURS",
+        // "WRANGELL ST ELIAS",
+        // "WIND CAVE",
+        // "KOBUK VALLEY",
+        // "LAKE CLARK",
+        // "ISLE ROYALE",
+        // "HALEAKALA"
+    ];
+
+    var guessedLetters = [];
+    var guessingWord = [];
+    var usedGuessingwWords = [];
+    var wordToMatch;
+    var numGuess;
+    var wins = 0;
+    var pause = false; // This var and setTimout function to not listen for keypress while game resets
+    var loseSound = new Audio("./assets/sounds/ahahah.mp3");
+    var winSound = new Audio("./assets/sounds/clever.wav");
+    var championSound = new Audio("./assets/sounds/crazysob.mp3");
+
+    //Starts game
+    function initializeGame() {
+
+        // Get a new word
+        wordToMatch = possibleWords[Math.floor(Math.random() * possibleWords.length)].toUpperCase();
+        // Set number of guesses (higher or lower) based on word length
+        if (wordToMatch.length <= 4) {
+            numGuess = 4
+        } else if (wordToMatch.length > 4 && wordToMatch.length <= 7) {
+            numGuess = Math.floor(wordToMatch.length * .67)
+        } else if (wordToMatch.length > 7 && wordToMatch.length <= 10) {
+            numGuess = Math.floor(wordToMatch.length * .5)
+        } else if (wordToMatch.length > 10 && wordToMatch.length <= 14) {
+            numGuess = Math.floor(wordToMatch.length * .52)
+        } else if (wordToMatch.length > 14) {
+            numGuess = 7;
+        }
+
+        // Get underscores for guessingWord from wordToMatch
+        for (var i = 0; i < wordToMatch.length; i++) {
+            // Put a space instead of an underscore between multi-word options in possibleWords array
+            if (wordToMatch[i] === " ") {
+                guessingWord.push(" ")
+            } else {
+                guessingWord.push("_");
+            }
+        }
+        updateDisplay();
+    };
+
+    function playsound() {
+        var msg = new SpeechSynthesisUtterance();
+        msg.text = wordToMatch;
+        msg.rate = 0.5;
+        window.speechSynthesis.speak(msg);
+    }
+
+    //Reset the game
+    function resetGame() {
+        if (usedGuessingwWords.length === possibleWords.length) {
+            championSound.play() // Toggle line comment on for almost the entire possibleWords array to hear this end of game sound clip
+            usedGuessingwWords = []
+            wins = 0
+            setTimeout(resetGame, 6000); // Note for future change - shorten possibleWords, make jumbotron display congratulatory message upon guessing all possibilites
+        } else {
+            pause = false;
+            // Restores blinking "...get started" message
+            document.getElementById('welcome').className = 'blink';
+
+            // Get a new word
+            wordToMatch = possibleWords[Math.floor(Math.random() * possibleWords.length)].toUpperCase();
+            console.log(wordToMatch)
+            // If new word has already been used randomly select another
+            if (usedGuessingwWords.includes(wordToMatch) === true) {
+                alert("Your guess was Correct");
+                resetGame();
+            }
+
+            // Set number of guesses (higher or lower) based on word length
+            if (wordToMatch.length <= 4) {
+                numGuess = 4
+            } else if (wordToMatch.length > 4 && wordToMatch.length <= 7) {
+                numGuess = Math.floor(wordToMatch.length * .67)
+            } else if (wordToMatch.length > 7 && wordToMatch.length <= 10) {
+                numGuess = Math.floor(wordToMatch.length * .5)
+            } else if (wordToMatch.length > 10 && wordToMatch.length <= 14) {
+                numGuess = Math.floor(wordToMatch.length * .52)
+            } else if (wordToMatch.length > 14) {
+                numGuess = 7;
+            }
+
+            // Reset word arrays
+            guessedLetters = [];
+            guessingWord = [];
+
+            // Reset the guessed word
+            for (var i = 0; i < wordToMatch.length; i++) {
+                // Put a space instead of an underscore between multi-word options in possibleWords array
+                if (wordToMatch[i] === " ") {
+                    guessingWord.push(" ")
+                } else {
+                    guessingWord.push("_");
+                }
+            }
+            updateDisplay();
+        }
+    };
+
+    // Update the Display
+    function updateDisplay() {
+        document.getElementById("currentWord").innerText = guessingWord.join("");
+        document.getElementById("remainingGuesses").innerText = numGuess;
+        document.getElementById("guessedLetters").innerText = guessedLetters.join(" ");
+    };
+
+    // Wait for key press
+    document.onkeydown = function (event) {
+        // Make sure key pressed is an alpha character
+        if (isLetter(event.key) && pause === false) {
+            checkForLetter(event.key.toUpperCase());
+        }
+        // Turn off blinking "...get started" message on keypress
+        document.getElementById('welcome').className = 'noBlink';
+    };
+
+    // Check if key pressed is between A-Z or a-z
+    var isLetter = function (ch) {
+        return typeof ch === "string" && ch.length === 1
+            && (ch >= "a" && ch <= "z" || ch >= "A" && ch <= "Z");
+    };
+
+    // Check if letter is in word
+    function checkForLetter(letter) {
+        var foundLetter = false;
+
+        // Search string for letter
+        for (var i = 0; i < wordToMatch.length; i++) {
+            if (letter === wordToMatch[i]) {
+                guessingWord[i] = letter
+                foundLetter = true
+                // If guessing word matches random word
+                if (guessingWord.join("") === wordToMatch) {
+                    // Increment # of wins and add word to usedGuessingWords
+                    wins++
+                    // Add word to usedGuessingWords array to not be repeated
+                    usedGuessingwWords.push(wordToMatch)
+                    console.log(usedGuessingwWords)
+                    pause = true;
+                    winSound.play();
+                    document.getElementById('spellresult').innerHTML = '<h3 id="correct">Awesome!It is Correct!</h3><button id="next" class="btn waves-effect btn-large" name="action" onclick="location.reload()">Next<i class="material-icons right">send</i> </button>';
+                    document.getElementById('word').innerHTML = '';
+                    updateDisplay();
+                    {#setTimeout(resetGame, 10000);#}
+
+                    {#location.reload();#}
+                }
+            }
+        }
+        if (foundLetter === false) {
+            // Check if inccorrect guess is already on the list
+            if (guessedLetters.includes(letter) === false) {
+                // Add incorrect letter to guessed letter list
+                guessedLetters.push(letter)
+                // Decrement the number of remaining guesses
+                numGuess--
+            }
+            if (numGuess === 0) {
+                // Add word to usedGuessingWords array to not be repeated
+                usedGuessingwWords.push(wordToMatch);
+                console.log(usedGuessingwWords)
+                // Display word before reseting game
+                guessingWord = wordToMatch.split();
+                pause = true;
+                loseSound.play();
+                document.getElementById('spellresult').innerHTML = '<h3 id="incorrect">Incorrect!<br>The Word was:' + wordToMatch + '</h3><button id="next" class="btn waves-effect btn-large" name="action" onclick="location.reload()">Next<i class="material-icons right">send</i> </button>';
+                document.getElementById('word').innerHTML = '';
+                {#setTimeout(resetGame, 4000);#}
+                {#location.reload();#}
+            }
+        }
+        updateDisplay();
+    };
+
+    initializeGame();
+
+</script>
+
+<script type="text/javascript"
+        src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<footer class="footer">
+    <div class="container" id="">
+        <div class="row">
+            <div class="footer-col">
+                <h4>company</h4>
+                <ul>
+                    <li><a href="{% url 'aboutus' %}">about us</a></li>
+                    <li><a href="{% url 'privacy' %}">privacy policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>get help</h4>
+                <ul>
+                    <li>
+                        <a href="https://docs.google.com/forms/d/e/1FAIpQLSfGF14XUm0-lV9cmSUeQFvJHgeCUu462_4_Siz8KGUpjuOdkw/viewform"
+                           target="_blank" style="font-size: 22px;">Customer care</a></li>
+                    <li>
+                        <a href="https://docs.google.com/forms/d/e/1FAIpQLSfGF14XUm0-lV9cmSUeQFvJHgeCUu462_4_Siz8KGUpjuOdkw/viewform"
+                           target="_blank" style="font-size: 22px;">Report</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+
+            </div>
+            <div class="footer-col">
+                <h4>follow us</h4>
+                <div class="social-links" style="display: flex;justify-content: space-evenly;">
+                    <a href="https://www.facebook.com/profile.php?id=100074285931176" target="_blank"><i
+                            class="fab fa-facebook-f"></i></a>
+                    <a href="https://twitter.com/ModernDictiona1" target="_blank"><i class="fab fa-twitter"></i></a>
+                    <a href="https://www.instagram.com/moderndictionary5/" target="_blank"><i
+                            class="fab fa-instagram"></i></a>
+                    <a href="https://www.linkedin.com/in/modern-dictionary-b713b1225/" target="_blank"><i
+                            class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <h6>Copyright &copy; 2021 moderndictionary.com</h6>
+    </div>
+</footer>
+
+<!-- Compiled and minified CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+<!-- Compiled and minified JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+</body>
+</html>

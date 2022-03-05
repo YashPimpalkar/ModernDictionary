@@ -1,0 +1,758 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bitter:wght@376&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="shortcut icon" type="image/ico" href="{% static 'images/logo.ico' %}"/>
+    <link rel="stylesheet" type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <title>Guess the Picture</title>
+    <style>
+
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Rampart+One&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        @keyframes slideInFromLeft {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInFromRight {
+            0% {
+                transform: translateX(100%);
+            }
+            100% {
+                transform: translateX(0);
+            }
+        }
+
+        body {
+            background-image: url("https://www.happierhuman.com/wp-content/uploads/2020/05/word-board-games.jpg");
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: 100% 100%;
+
+        }
+
+        #box {
+            background-color: white;
+            border-radius: 20px;
+            margin-bottom: 40px;
+        }
+
+        #check {
+            margin-bottom: 30px;
+            border-radius: 15px;
+            background-color: #0083c4;
+            font-family: 'Bitter', serif;
+            animation: 2s ease-out 0s 1 slideInFromLeft;
+        }
+
+        #check:hover {
+            background-color: white;
+            color: #0083c4;
+            font-weight: bolder;
+        }
+
+        #icon_prefix2 {
+            margin-bottom: -40px;
+        }
+
+        .center {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        img {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            width: 300px;
+            height: 200px;
+            animation: 2s ease-out 0s 1 slideInFromLeft;
+        }
+
+        #hereis {
+            animation: 2s ease-out 0s 1 slideInFromLeft;
+        }
+
+        h3 {
+            padding-top: 10px;
+            text-align: center;
+        }
+
+        #answer {
+            margin-bottom: 30px;
+            border-radius: 15px;
+            font-family: 'Bitter', serif;
+            animation: 2s ease-out 0s 1 slideInFromRight;
+        }
+
+        body {
+            font-family: 'Bitter', serif;
+        }
+
+        #nav {
+            background-color: #066084;
+        }
+
+        #games {
+            font-size: 21px;
+        }
+
+        #games:hover {
+            background-color: white;
+            color: #066084;
+            font-weight: bold;
+        }
+
+        a:hover {
+            color: black;
+        }
+
+        h4 {
+            color: black;
+        }
+
+        .chat-bar-collapsible {
+            position: fixed;
+            bottom: 0;
+            right: 50px;
+
+            box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .collapsible {
+            background-color: #066084;
+            color: white;
+            cursor: pointer;
+            padding: 18px;
+            width: 250px;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            border-radius: 10px 10px 0px 0px;
+        {#border: 3px solid white;#}{#border-bottom: none;#}
+        }
+
+        .content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+            background-color: black;
+        }
+
+        .full-chat-block {
+            width: 350px;
+
+            background: white;
+            text-align: center;
+            overflow: auto;
+            scrollbar-width: none;
+            height: max-content;
+            transition: max-height 0.2s ease-out;
+        }
+
+        .outer-container {
+            min-height: 300px;
+            bottom: 0%;
+            width: 250px;
+            position: relative;
+            background-color: white;
+        }
+
+
+        .chat-container {
+            max-height: 300px;
+            width: 100%;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            scroll-behavior: smooth;
+            border-radius: 10px 10px 0px 0px;
+            hyphens: auto;
+        }
+
+        .chat-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .chat-bar-input-block {
+            display: flex;
+            float: left;
+            box-sizing: border-box;
+            justify-content: space-between;
+            width: 100%;
+            align-items: center;
+            background-color: rgb(235, 235, 235);
+            border-radius: 10px 10px 0px 0px;
+            padding: 10px 0px 10px 10px;
+        }
+
+        .chat-bar-icons {
+            display: flex;
+            justify-content: space-evenly;
+            box-sizing: border-box;
+            width: 25%;
+            float: right;
+            font-size: 20px;
+        }
+
+        #chat-icon:hover {
+            opacity: .7;
+        }
+
+        /* Chat bubbles */
+
+        #userInput {
+            width: 75%;
+        }
+
+        .input-box {
+            float: left;
+            border: none;
+            box-sizing: border-box;
+            width: 100%;
+            border-radius: 10px;
+            padding: 10px;
+            font-size: 16px;
+            color: #000;
+            background-color: white;
+            outline: none
+        }
+
+        .userText {
+            color: white;
+            font-family: Helvetica;
+            font-size: 16px;
+            font-weight: normal;
+            text-align: right;
+            clear: both;
+        }
+
+        .userText span {
+            line-height: 1.5em;
+            display: inline-block;
+            background: #066084;
+            padding: 10px;
+            border-radius: 8px;
+            border-bottom-right-radius: 2px;
+            max-width: 80%;
+            margin-right: 10px;
+            animation: floatup .5s forwards
+        }
+
+        .botText {
+            color: #000;
+            font-family: Helvetica;
+            font-weight: normal;
+            font-size: 16px;
+            text-align: left;
+            width: 280px;
+        }
+
+        .botText span {
+            line-height: 1.5em;
+            display: inline-block;
+            background: #e0e0e0;
+            padding: 10px;
+            border-radius: 8px;
+            border-bottom-left-radius: 2px;
+            max-width: 80%;
+            margin-left: 10px;
+            animation: floatup .5s forwards
+        }
+
+        @keyframes floatup {
+            from {
+                transform: translateY(14px);
+                opacity: .0;
+            }
+            to {
+                transform: translateY(0px);
+                opacity: 1;
+            }
+        }
+
+        @media screen and (max-width: 600px) {
+            .full-chat-block {
+                width: 100%;
+                border-radius: 0px;
+            }
+
+            .chat-bar-collapsible {
+                position: fixed;
+                bottom: 0px;
+                right: 0px;
+                width: 100%;
+            }
+
+            .collapsible {
+                width: 100%;
+                border: 0px;
+                border-top: 3px solid white;
+                border-radius: 0px;
+            }
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-family: Helvetica, sans-serif, Arial;
+        }
+
+        body {
+            margin: 0 auto;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            position: relative;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        footer {
+
+            background: rgb(0, 0, 0);
+            height: auto;
+            width: 100%;
+            padding-top: 40px;
+            color: #fff;
+        }
+
+        .footer-content h3 {
+            font-size: 1.9rem;
+            font-weight: 500;
+            text-transform: capitalize;
+            line-height: 8rem;
+            text-align: center;
+            position: relative;
+            top: -60px;
+            color: #ffffff;
+
+
+        }
+
+        .footer-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .footer-bottom {
+            background: rgb(12, 35, 61);
+            width: 100%;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        .footer-bottom p {
+            font-size: 20px;
+            word-spacing: 2px;
+            text-transform: capitalize;
+        }
+
+        .footer-bottom span {
+            text-transform: uppercase;
+            opacity: .4;
+            font-weight: 200;
+        }
+
+        .footer-col {
+            width: 25%;
+            padding: 0 15px;
+        }
+
+        .footer-col h4 {
+            font-size: 18px;
+            color: #ffffff;
+            text-transform: capitalize;
+            margin-bottom: 28px;
+            font-weight: 500;
+            position: relative;
+
+        }
+
+        .footer-col h4::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -7px;
+            background-color: #e91e63;
+            height: 2px;
+            box-sizing: border-box;
+            width: 50px;
+        }
+
+        .footer-col ul li:not(:last-child) {
+            margin-bottom: 10px;
+        }
+
+        .footer-col ul li a {
+            font-size: 20px;
+            text-transform: capitalize;
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 300;
+            color: #bbbbbb;
+            display: block;
+            transition: all 0.3s ease;
+        }
+
+        .footer-col ul li a:hover {
+            color: #ffffff;
+            padding-left: 8px;
+        }
+
+        .footer-col .social-links a {
+            display: inline-block;
+            height: 40px;
+            width: 40px;
+            background-color: rgb(253, 10, 144);
+            margin: 0 8px 8px 0;
+            text-align: center;
+            line-height: 40px;
+            border-radius: 50%;
+            color: #ffffff;
+            transition: all 0.5s ease;
+        }
+
+        .footer-col .social-links a:hover {
+            color: #24262b;
+            background-color: #ffffff;
+        }
+
+        /*responsive*/
+        @media (max-width: 767px) {
+            .footer-col {
+                width: 50%;
+                margin-bottom: 30px;
+            }
+        }
+
+        @media (max-width: 574px) {
+            .footer-col {
+                width: 100%;
+            }
+        }
+
+        @media screen and (max-width: 1000px) {
+            #logo {
+                font-size: 19px;
+            }
+            #input-box textarea{
+                margin-left: -10px;
+                width: 200px;
+                text-align: center;
+                padding-left: -30px;
+            }
+            #input-box i{
+                margin-left: -50px;
+            }
+            #inputbox{
+                margin-right: 100px;
+            }
+            #input-box label{
+                {#padding-left: 30px;#}
+                width: 150px;
+            }
+            #games {
+                font-size: 20px;
+                padding: 20px;
+            }
+            img{
+                width: 250px;
+                height: 150px;
+                margin-left: -10px;
+            }
+            body h4{
+                font-size: 25px;
+            }
+            #menu {
+                font-size: 20px;
+            }
+        }
+        @media screen and (max-width: 320px){
+            #logo,#menu{
+                font-size: 15px;
+            }
+            #input-box label{
+                {#padding-left: 30px;#}
+                width: 100px;
+            }
+            #input-box textarea{
+                margin-left: -10px;
+                width: 200px;
+                text-align: center;
+                padding-left: -30px;
+            }
+            #input-box i{
+                margin-left: -50px;
+            }
+            #inputbox{
+                margin-right: 100px;
+            }
+            #input-box label{
+                {#padding-left: 30px;#}
+                width: 150px;
+            }
+            #games {
+                font-size: 20px;
+                padding: 20px;
+            }
+            img{
+                width: 250px;
+                height: 150px;
+                margin-left: -10px;
+            }
+            body h4{
+                font-size: 25px;
+            }
+            #menu {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<nav id="nav">
+    <div class="nav-wrapper">
+        <div class="container">
+            <a href="/" class="brand-logo" id="logo">Modern Dictionary</a>
+            <a href="/" class="sidenav-trigger" data-target="mobile-nav">
+                <i class="material-icons" id="menu">menu</i>
+            </a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <li><a href="{% url 'games' %}" id="games">Back</a></li>
+                <li><a href="{% url 'blogs' %}" id="games">Blogs</a></li>
+                <li><a href="{% url 'download' %}" id="games">Download</a></li>
+                <li><a href="/" id="games">Home</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<ul class="sidenav" id="mobile-nav">
+    <li><a href="{% url 'games' %}" id="games">Back</a></li>
+    <li><a href="{% url 'blogs' %}" id="games">Blogs</a></li>
+    <li><a href="{% url 'download' %}" id="games">Download</a></li>
+    <li><a href="/" id="games">Home</a></li>
+</ul>
+<div class="container" id="box">
+    <div class="image">
+        <script>
+            var images = []
+            images[0] = "{% static 'images/1.jpg' %}";
+            images[1] = "{% static 'images/1.jpg'%}";
+            images[2] = "{% static 'images/2.jpg' %}";
+            images[3] = "{% static 'images/3.jpg' %}";
+            images[4] = "{% static 'images/4.jpg' %}";
+            images[5] = "{% static 'images/5.jpg' %}";
+            images[6] = "{% static 'images/6.jpg' %}";
+            images[7] = "{% static 'images/7.jpg' %}";
+            images[8] = "{% static 'images/8.jpg' %}";
+            images[9] = "{% static 'images/9.jpg' %}";
+            images[10] = "{% static 'images/10.jpg' %}";
+            images[11] = "{% static 'images/11.jpg' %}";
+            images[12] = "{% static 'images/12.jpg' %}";
+            images[13] = "{% static 'images/13.jpg' %}";
+            images[14] = "{% static 'images/14.jpg' %}";
+            images[15] = "{% static 'images/15.jpg' %}";
+            images[16] = "{% static 'images/16.jpg' %}";
+            images[17] = "{% static 'images/17.jpg' %}";
+            images[18] = "{% static 'images/18.jpg' %}";
+            images[19] = "{% static 'images/19.jpg' %}";
+            images[20] = "{% static 'images/20.jpg' %}";
+            usedImages = [];
+
+            changeImage();
+
+            var iname;
+
+
+            function changeImage() {
+                var index = Math.floor(Math.random() * (images.length)),
+                    thisImage = images[index];
+                usedImages.push(thisImage);
+                images.splice(index, 1);
+
+                if (images.length < 1) {
+                    images = usedImages.splice(0, usedImages.length);
+                }
+
+                var imgStr = '<img src="' + thisImage + '" alt = "" id="current" class="center" style="padding-top: 30px;">';
+                if ((index === 0) || index === 1) {
+                    iname = "Chrysanthemum";
+                } else if (index === 2) {
+                    iname = "Cauliflower";
+                } else if (index === 3) {
+                    iname = "Merry go round";
+                } else if (index === 4) {
+                    iname = "Umbrella";
+                } else if (index === 5) {
+                    iname = "Lamp";
+                } else if (index === 6) {
+                    iname = "Microwave";
+                } else if (index === 7) {
+                    iname = "Anchor";
+                } else if (index === 8) {
+                    iname = "Pocket watch";
+                } else if (index === 9) {
+                    iname = "Telescope";
+                } else if (index === 10) {
+                    iname = "Scissor";
+                } else if (index === 11) {
+                    iname = "Lantern";
+                } else if (index === 12) {
+                    iname = "Spectacle";
+                } else if (index === 13) {
+                    iname = "Magnifying glass";
+                } else if (index === 14) {
+                    iname = "Gramophone";
+                } else if (index === 15) {
+                    iname = "Handkerchief";
+                } else if (index === 16) {
+                    iname = "Cassettes";
+                } else if (index === 17) {
+                    iname = "Kangaroo";
+                } else if (index === 18) {
+                    iname = "Typewriter";
+                } else if (index === 19) {
+                    iname = "Sloth";
+                } else {
+                    iname = "Axolotl";
+                }
+                document.write(imgStr);
+                document.close();
+            }
+        </script>
+
+    </div>
+
+    <div id="here"><h4 style="font-family: 'Bitter', serif;text-align: center;" id="hereis">Guess this Picture!!<span
+            id="currentWord"></span></h4></div>
+    <div id="inputbox">
+        <div class="row">
+            <form class="col s12">
+                <div class="row">
+                    <div class="input-field col offset-s4 s4" id="input-box">
+                        <i class="material-icons prefix">mode_edit</i>
+                        <textarea id="icon_prefix2" class="materialize-textarea"
+                                  style="text-transform: uppercase;"></textarea>
+                        <label for="icon_prefix2">Enter your Word</label>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="center" class="center">
+        <button id="check" class="btn waves-effect waves-light btn-large" onclick="z()"
+                style="font-family: 'Bitter', serif;">Check<i
+                class="material-icons right">search</i></button>
+    </div>
+
+    <script>
+        function refreshh() {
+            setTimeout(
+                function () {
+                    location.reload();
+                }, 5000);
+        }
+
+        function z() {
+            var a = document.getElementById("icon_prefix2");
+
+            if ((a.value === iname) || (a.value === iname.toUpperCase()) || (a.value === iname.toLowerCase())) {
+                document.getElementById('inputbox').innerHTML = '';
+                document.getElementById('center').innerHTML = '<h4 style="color: green">Awesome!You Guessed it Right!</h4><br><button id="answer" class="btn waves-effect waves-light btn-large" style="background-color: #0083c4;" onclick="location.reload()">Next<i class="material-icons right">send</i></button><br>';
+                {#refreshh();#}
+
+            } else {
+                document.getElementById('center').innerHTML = '<h4 style="color: red">OOPS!You Guessed it Wrong!<br>The Word was ' + iname + '</h4><br><button id="answer" class="btn waves-effect waves-light btn-large" style="background-color: #0083c4;" onclick="location.reload()">Next<i class="material-icons right">send</i></button><br>';
+                document.getElementById('inputbox').innerHTML = '';
+                {#refreshh();#}
+            }
+
+
+        }
+    </script>
+</div>
+<footer class="footer">
+    <div class="container" id="">
+        <div class="row">
+            <div class="footer-col">
+                <h4>company</h4>
+                <ul>
+                    <li><a href="{% url 'aboutus' %}">about us</a></li>
+                    <li><a href="{% url 'privacy' %}">privacy policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>get help</h4>
+                <ul>
+                    <li>
+                        <a href="https://docs.google.com/forms/d/e/1FAIpQLSfGF14XUm0-lV9cmSUeQFvJHgeCUu462_4_Siz8KGUpjuOdkw/viewform"
+                           target="_blank">Customer care</a></li>
+                    <li>
+                        <a href="https://docs.google.com/forms/d/e/1FAIpQLSfGF14XUm0-lV9cmSUeQFvJHgeCUu462_4_Siz8KGUpjuOdkw/viewform"
+                           target="_blank">Report</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+
+            </div>
+            <div class="footer-col">
+                <h4>follow us</h4>
+                <div class="social-links" style="display: flex;justify-content: space-evenly;">
+                    <a href="https://www.facebook.com/profile.php?id=100074285931176" target="_blank"><i
+                            class="fab fa-facebook-f" style="line-height: 40px;"></i></a>
+                    <a href="https://twitter.com/ModernDictiona1" target="_blank"><i class="fab fa-twitter"
+                                                                                     style="line-height: 40px;"></i></a>
+                    <a href="https://www.instagram.com/moderndictionary5/" target="_blank"><i
+                            class="fab fa-instagram" style="line-height: 40px;"></i></a>
+                    <a href="https://www.linkedin.com/in/modern-dictionary-b713b1225/" target="_blank"><i
+                            class="fab fa-linkedin-in" style="line-height: 40px;"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <h6>Copyright &copy; 2021 moderndictionary.com</h6>
+    </div>
+</footer>
+<!-- Compiled and minified CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+<!-- Compiled and minified JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.sidenav').sidenav();
+    });
+</script>
+</body>
+</html>
+
+
