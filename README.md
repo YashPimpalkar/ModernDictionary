@@ -47,17 +47,22 @@ Follow these steps to set up the project locally:
    ```bash
    git clone https://github.com/yourusername/modern-dictionary.git
    cd modern-dictionary
-   ```
+
 2. **Set Up a Virtual Environment:
    ```bash
-python -m venv venv
-# On Windows
-venv\Scripts\activate
-# On macOS/Linux
-source venv/bin/activate
-```
+   python -m venv venv
+   
+3. **Activate the Virtual Environment:   
+  # On Windows
+    venv\Scripts\activate
+  # On macOS/Linux
+    source venv/bin/activate
 
-pip install -r requirements.txt
-
-python manage.py runserver
-
+4. **Install Dependencies:
+   ```bash
+   pip install -r requirements.txt
+   
+5. **Run the Django Server:
+   ```bash
+   python manage.py runserver
+ 
