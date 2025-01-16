@@ -53,10 +53,10 @@ Follow these steps to set up the project locally:
    python -m venv venv
    
 3. **Activate the Virtual Environment:   
-  # On Windows
-    venv\Scripts\activate
-  # On macOS/Linux
-    source venv/bin/activate
+    # On Windows
+       venv\Scripts\activate
+    # On macOS/Linux
+       source venv/bin/activate
 
 4. **Install Dependencies:
    ```bash
